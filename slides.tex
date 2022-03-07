@@ -1,0 +1,165 @@
+\documentclass{beamer}
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+  \setbeamertemplate{footline}[frame number]
+  \setbeamertemplate{itemize items}[circle]
+  \setbeamertemplate{theorems}[numbered]
+  \setbeamercolor*{structure}{bg=white,fg=blue}
+  \setbeamerfont{block title}{size=\normalsize}
+  \setbeamercolor{bibliography entry author}{fg=black}
+  \setbeamercolor{bibliography entry title}{fg=black}
+  \setbeamercolor{bibliography entry note}{fg=black}
+}
+
+% \newtheorem{proposition}[theorem]{Proposition}
+% \theoremstyle{definition}
+% \newtheorem{algorithm}[theorem]{Algorithm}
+% \newtheorem{idea}[theorem]{Idea}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% \usepackage{aligned-overset}
+\usepackage{alltt}
+\usepackage{amsmath}
+\usepackage{csquotes}
+% \usepackage{multicol}
+% \usepackage{stmaryrd}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{intersections}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+\usepgfplotslibrary{dateplot}
+\usepackage{pgfplotstable}
+% \usepackage{booktabs}
+\usepackage[final]{microtype}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsthm,thmtools}
+% \usepackage[nottoc]{tocbibind}
+% \usepackage[ruled]{algorithm2e}
+\usepackage{enumerate}
+\usepackage{tabularx}
+\usepackage[italic]{esdiff}
+\usepackage{subcaption}
+\usepackage{ltablex}
+\usepackage{multirow}
+
+% Settings for pgfplots
+\pgfplotsset{compat=newest}
+
+% \renewcommand\tabularxcolumn[1]{m{#1}}
+% \newcolumntype{R}{>{\raggedleft\arraybackslash}X}=
+
+\def\code#1{\texttt{\frenchspacing#1}}
+\def\padding{\vspace{0.5cm}}
+\def\spadding{\vspace{0.25cm}}
+\def\b{\textcolor{blue}}
+\def\r{\textcolor{red}}
+\def\g#1{{\usebeamercolor[fg]{block title example}{#1}}}
+
+% % fix for \pause in align
+% \makeatletter
+% \let\save@measuring@true\measuring@true
+% \def\measuring@true{%
+%   \save@measuring@trueoread{##1}}{}}%
+%   \def\beamer@sortzeroread##1<##2>{}%
+%   \def\beamer@finalnospec{}%
+% }
+% \makeatother
+
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\usepackage[sorting=ynt,style=alphabetic]{biblatex}
+\addbibresource{sources.bib}
+
+\renewcommand{\footnotesize}{\tiny}
+
+\begin{document}
+
+\title[Deterministic Algorithms for the Lovász Local Lemma]{Deterministic Algorithms \\ for the Lovász Local Lemma\footfullcite{harris2022deterministic}}
+\author{Jonas Hübotter and Duri Janett \\ Advised by Yassir Akram}
+\date{March 29, 2022}
+%   \def\beamer@sortzero##1{\beamer@ifnextcharospec{\beamer@sortzer
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+ \tableofcontents[subsubsectionstyle=hide,pausesections]
+\end{frame}
+% \AtBeginSection[]
+%   {
+%      \begin{frame}[allowframebreaks]{Plan}
+%      \tableofcontents[currentsection, sectionstyle=show/hide, hideothersubsections]
+%      \end{frame}
+%   }
+
+\section{Introduction}
+\subsection{Lovász Local Lemma and the MT Algorithm}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+\subsection{Overview of Results}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+
+\section{Background}
+\begin{frame}{Plan}
+\tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
+\end{frame}
+\subsection{The MT Algorithm in terms of the Resampling Table}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+\subsection{The Structure of the Resampling Table and Witness DAGs}
+\subsubsection{What are Witness DAGs?}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+\subsubsection{From Witness DAGs to the Resampling Table to the MT Algorithm}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+
+\section{A Deterministic Algorithm}
+\begin{frame}{Plan}
+\tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
+\end{frame}
+\subsection{Collectible Witness DAGs}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+\subsection{Analyzing the Deterministic Algorithm}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+\subsection{Pre-processing the Witness DAG and Crisper Results}
+\begin{frame}{Frame Title}
+    
+\end{frame}
+
+
+\begin{frame}{}
+    \centering \large
+    Thanks for your attention!
+    Questions?
+\end{frame}
+
+\end{document}
