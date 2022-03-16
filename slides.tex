@@ -14,7 +14,7 @@
   \setbeamertemplate{caption}[numbered]
   \setbeamertemplate{footline}[frame number]
   \setbeamertemplate{itemize items}[circle]
-  \setbeamertemplate{theorems}[numbered]
+%   \setbeamertemplate{theorems}[numbered]
   \setbeamercolor*{structure}{bg=white,fg=blue}
   \setbeamerfont{block title}{size=\normalsize}
   \setbeamercolor{bibliography entry author}{fg=black}
@@ -30,42 +30,57 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-% \usepackage{aligned-overset}
-\usepackage{alltt}
-\usepackage{amsmath}
-\usepackage{csquotes}
-% \usepackage{multicol}
-% \usepackage{stmaryrd}
-\usepackage{tabularx}
+\usepackage{nicefrac}
+% \usepackage{tabularx}
+% \usepackage{makecell}
+% \usepackage{amsmath,amsfonts,amsthm,amssymb,mathrsfs,bbm,mathtools}
+% \usepackage{enumitem}
 \usepackage{tikz}
-\usetikzlibrary{patterns}
-\usetikzlibrary{intersections}
-\usepackage{pgfplots}
-\usepgfplotslibrary{fillbetween}
-\usepgfplotslibrary{dateplot}
-\usepackage{pgfplotstable}
-% \usepackage{booktabs}
-\usepackage[final]{microtype}
-\usepackage{caption}
-\usepackage{amsmath}
-\usepackage{mathtools}
-\usepackage{amsthm,thmtools}
-% \usepackage[nottoc]{tocbibind}
-% \usepackage[ruled]{algorithm2e}
-\usepackage{enumerate}
-\usepackage{tabularx}
-\usepackage[italic]{esdiff}
-\usepackage{subcaption}
-\usepackage{ltablex}
-\usepackage{multirow}
+% \usetikzlibrary{patterns}
+% \usetikzlibrary{intersections}
+% \usepackage{pgfplots}
+% \usepgfplotslibrary{fillbetween}
+% \usepgfplotslibrary{dateplot}
+% \usepackage{pgfplotstable}
 
-% Settings for pgfplots
-\pgfplotsset{compat=newest}
+% \usepackage{booktabs}
+% \usepackage[final]{microtype}
+% \usepackage{caption}
+% \usepackage{amsmath}
+% \usepackage{mathtools}
+% \usepackage{amsthm,thmtools}
+% % \usepackage[nottoc]{tocbibind}
+% % \usepackage[ruled]{algorithm2e}
+% \usepackage{enumerate}
+% \usepackage[italic]{esdiff}
+% \usepackage{subcaption}
+% \usepackage{ltablex}
+% \usepackage{multirow}
+
+%--------Pseudocode--------
+\usepackage{xcolor,amsmath}
+\usepackage{algorithm2e}
+\DontPrintSemicolon
+% \SetAlgoSkip{bigskip}
+
+% % Define pseudocode formatting
+% \renewcommand{\KwSty}[1]{\textnormal{\textcolor{blue!90!black}{\ttfamily\bfseries #1}}\unskip}
+% \renewcommand{\ArgSty}[1]{\textnormal{\ttfamily #1}\unskip}
+% \SetKwComment{Comment}{\color{green!50!black}// }{}
+% \renewcommand{\CommentSty}[1]{\textnormal{\ttfamily\color{green!50!black}#1}\unskip}
+% \newcommand{\assign}{\leftarrow}
+% % \newcommand{\var}{\texttt}
+% \newcommand{\FuncCall}[2]{\texttt{\bfseries #1(#2)}}
+% \SetKwProg{Function}{function}{}{}
+% \renewcommand{\ProgSty}[1]{\texttt{\bfseries #1}}
+
+% % Settings for pgfplots
+% \pgfplotsset{compat=newest}
 
 % \renewcommand\tabularxcolumn[1]{m{#1}}
 % \newcolumntype{R}{>{\raggedleft\arraybackslash}X}=
 
-\def\code#1{\texttt{\frenchspacing#1}}
+% \def\code#1{\texttt{\frenchspacing#1}}
 \def\padding{\vspace{0.5cm}}
 \def\spadding{\vspace{0.25cm}}
 \def\b{\textcolor{blue}}
@@ -82,7 +97,15 @@
 % }
 % \makeatother
 
-\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+% \DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\NewDocumentCommand{\follows}{}{\ensuremath{\rightsquigarrow}\hspace{0.5em}}
+\newcommand*{\defeq}{\overset{.}{=}}
+\newcommand*{\eqdef}{\overset{.}{=}}
+\RenewDocumentCommand{\Pr}{m}{Pr[#1]}
+\RenewDocumentCommand{\O}{m}{\mathcal{O}(#1)}
+\NewDocumentCommand{\B}{}{\mathcal{B}}
+\NewDocumentCommand{\pmax}{}{p_\mathrm{max}}
+\NewDocumentCommand{\var}{m}{\mathrm{var}(#1)}
 
 \usepackage[sorting=ynt,style=alphabetic]{biblatex}
 \addbibresource{sources.bib}
@@ -99,9 +122,9 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{Outline}
- \tableofcontents[subsubsectionstyle=hide,pausesections]
-\end{frame}
+% \begin{frame}{Outline}
+%  \tableofcontents[subsubsectionstyle=hide,pausesections]
+% \end{frame}
 % \AtBeginSection[]
 %   {
 %      \begin{frame}[allowframebreaks]{Plan}
@@ -111,69 +134,147 @@
 
 \section{Introduction}
 \subsection{Lovász Local Lemma and the MT Algorithm}
-\begin{frame}{Frame Title}
-    
+\begin{frame}{Setting}
+Distribution $\Omega$ over independent $\Sigma$-valued coordinates $X_1, \dots, X_n$.
+``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq [n]$.\pause
+
+\begin{example}[3-SAT]
+\begin{columns}
+\begin{column}{.3\textwidth}
+$\begin{aligned}
+B_1 &\defeq f_1(X_1,X_5,X_8) \\
+B_2 &\defeq f_2(X_2,X_5,X_{10}) \\
+B_3 &\defeq f_3(X_1,X_8,X_{10}) \\
+B_4 &\defeq f_4(X_2,X_6,X_{11})
+\end{aligned}$
+\end{column}
+\begin{column}{.3\textwidth}
+\input{figures/3sat}
+\end{column}
+\end{columns}
+\end{example}\pause
+
+\begin{theorem}[(Symmetric) Lovász Local Lemma]
+If for any $i$, $\Pr{B_i} \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\Pr{\text{all $B_i$ avoided}} > 0$.
+\end{theorem}\pause\spadding
+
+For \g{$k$-SAT}, $p=2^{-k}$ \follows satisfiable if any literal appears in at most $d = \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
 \end{frame}
+
+\begin{frame}{Prior Work}
+\begin{algorithm}[H]
+    \TitleOfAlgo{MT-Algorithm}
+    Draw $X$ from distribution $\Omega$\;
+    \While{some bad-event is true on $X$}{
+        Select any true bad-event $B$\;
+        For each $i \in \var{B}$, draw $X_i$ from its distribution in $\Omega$\;
+    }
+\end{algorithm}\pause
+\follows converges within $\O{m}$ iterations in expectation.\footfullcite{moser2010constructive}\pause\spadding
+
+What about deterministic algorithms?\pause\par
+Polynomial-time algorithm if $e \pmax d \leq 1$ for any constant $\epsilon > 0$.\footfullcite{chandrasekaran2013deterministic}
+\end{frame}
+
 \subsection{Overview of Results}
-\begin{frame}{Frame Title}
-    
+\begin{frame}{Contributions}
+\begin{enumerate}
+    \item \emph{Deterministic algorithm} with a simpler \& weaker condition that is satisfied by \emph{most} variants of the LLL.\pause
+    \item Faster \emph{parallel algorithm} with simpler conditions.\pause
+    \item Algorithm that finds a configuration avoiding bad events such that the (weighted) probability of some auxiliary events is not much more than their expectation.
+\end{enumerate}
 \end{frame}
 
 \section{Background}
+\subsection{Alternative Characterization of MT Algorithm}
 \begin{frame}{Plan}
 \tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
 \end{frame}
-\subsection{The MT Algorithm in terms of the Resampling Table}
-\begin{frame}{Frame Title}
-    
-\end{frame}
-\subsection{Counting Resamples with Witness DAGs}
-\subsubsection{What are Witness DAGs?}
-\begin{frame}{Frame Title}
-    
-\end{frame}
-\subsubsection{From Witness DAGs to the Resampling Table to the MT Algorithm}
-\begin{frame}{Frame Title}
-    
-\end{frame}
-\subsection{Shearer's Criterion}
-\begin{frame}{Frame Title}
-    
+
+\begin{frame}{Alternative Characterization of MT Algorithm}
+Consider the \b{resampling table} $R$ drawn according to distribution $\Omega$:\spadding
+
+\begin{columns}
+\begin{column}{.2\textwidth}
+\input{figures/resampling_table}
+\end{column}\pause
+\begin{column}{.2\textwidth}
+\flushright $\overset{\text{resampling $X_1$}}{\follows}$
+\end{column}
+\begin{column}{.3\textwidth}
+\hspace{-2em}\input{figures/shifted_resampling_table}
+\end{column}
+\end{columns}\pause
+
+When resampling $B_i$, shift rows $\var{B_i}$ to left.\pause\padding
+
+\follows MT algorithm deterministic with respect to resampling table!
 \end{frame}
 
-\section{A Deterministic Algorithm}
-\begin{frame}{Plan}
-\tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
-\end{frame}
-\subsection{Shearer's Criterion with Slack}
-\begin{frame}{Frame Title}
+\subsection{Outline}
+\begin{frame}{Outline}
+    Goal: Find a resampling table such that after poly. resamples all bad-events are avoided.\spadding
     
-\end{frame}
-\subsection{Counting Witness DAGs}
-\begin{frame}{Frame Title}
+    Idea: Choose $R$ such that the MT algorithm only performs resamples that the randomized variant is likely to perform.\pause\padding
     
-\end{frame}
-\subsection{Analyzing the Deterministic Algorithm}
-\begin{frame}{Frame Title}
-    
-\end{frame}
-\subsection{Pre-processing the Witness DAG and Crisper Results}
-\begin{frame}{Frame Title}
-    
+    \begin{enumerate}
+        \item Construct set of unlikely resamples of randomized MT algorithm.
+        \item Use method of conditional expectations to find a resampling table $R$ such that all of these resamplings are avoided.
+        \item Simulate MT algorithm using $R$.
+    \end{enumerate}
 \end{frame}
 
-\section{Outlook: A Parallel Algorithm and the MT-distribution}
-\begin{frame}{Plan}
-\tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
-\end{frame}
-\begin{frame}{Frame Title}
-    
+\subsection{Counting Resamples}
+\begin{frame}{Counting Resamples}
 \end{frame}
 
-\begin{frame}{}
-    \centering \large
-    Thanks for your attention!
-    Questions?
-\end{frame}
+% \subsection{Counting Resamples with Witness DAGs}
+% \subsubsection{What are Witness DAGs?}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+% \subsubsection{From Witness DAGs to the Resampling Table to the MT Algorithm}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+% \subsection{Shearer's Criterion}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+
+% \section{A Deterministic Algorithm}
+% \begin{frame}{Plan}
+% \tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
+% \end{frame}
+% \subsection{Shearer's Criterion with Slack}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+% \subsection{Counting Witness DAGs}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+% \subsection{Analyzing the Deterministic Algorithm}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+% \subsection{Pre-processing the Witness DAG and Crisper Results}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+
+% \section{Outlook: A Parallel Algorithm and the MT-distribution}
+% \begin{frame}{Plan}
+% \tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
+% \end{frame}
+% \begin{frame}{Frame Title}
+    
+% \end{frame}
+
+% \begin{frame}{}
+%     \centering \large
+%     Thanks for your attention!
+%     Questions?
+% \end{frame}
 
 \end{document}
