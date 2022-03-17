@@ -101,11 +101,14 @@
 \NewDocumentCommand{\follows}{}{\ensuremath{\rightsquigarrow}\hspace{0.5em}}
 \newcommand*{\defeq}{\overset{.}{=}}
 \newcommand*{\eqdef}{\overset{.}{=}}
-\RenewDocumentCommand{\Pr}{m}{Pr[#1]}
+\RenewDocumentCommand{\Pr}{om}{Pr\IfValueT{#1}{_{#1}}{}[#2]}
+\NewDocumentCommand{\E}{om}{\mathbb{E}\IfValueT{#1}{_{#1}}{}#2}
 \RenewDocumentCommand{\O}{m}{\mathcal{O}(#1)}
 \NewDocumentCommand{\B}{}{\mathcal{B}}
+\NewDocumentCommand{\G}{}{\mathcal{G}}
 \NewDocumentCommand{\pmax}{}{p_\mathrm{max}}
 \NewDocumentCommand{\var}{m}{\mathrm{var}(#1)}
+\NewDocumentCommand{\compat}{mm}{#1/#2}
 
 \usepackage[sorting=ynt,style=alphabetic]{biblatex}
 \addbibresource{sources.bib}
@@ -196,7 +199,7 @@ Consider the \b{resampling table} $R$ drawn according to distribution $\Omega$:\
 
 \begin{columns}
 \begin{column}{.2\textwidth}
-\input{figures/resampling_table}
+\input{figures/resampling_table}\pause
 \end{column}\pause
 \begin{column}{.2\textwidth}
 \flushright $\overset{\text{resampling $X_1$}}{\follows}$
@@ -218,14 +221,81 @@ When resampling $B_i$, shift rows $\var{B_i}$ to left.\pause\padding
     Idea: Choose $R$ such that the MT algorithm only performs resamples that the randomized variant is likely to perform.\pause\padding
     
     \begin{enumerate}
-        \item Construct set of unlikely resamples of randomized MT algorithm.
-        \item Use method of conditional expectations to find a resampling table $R$ such that all of these resamplings are avoided.
+        \item Construct set of unlikely resamples of randomized MT algorithm.\pause
+        \item Use method of conditional expectations to find a resampling table $R$ such that all of these resamplings are avoided.\pause
         \item Simulate MT algorithm using $R$.
     \end{enumerate}
 \end{frame}
 
 \subsection{Counting Resamples}
 \begin{frame}{Counting Resamples}
+Find an injective mapping from resamples to some ``countable'' structure.\pause
+
+\begin{block}{Mapping from executions}
+Note: Given a resampling table $R$, a \b{(partial) execution} of the MT algorithm is described by the sequence of resampled bad-events.\spadding
+
+\begin{columns}
+\begin{column}{.15\textwidth}
+\centering $B_1, B_2, B_3\onslide<4->{, \r{B_4}}$
+\end{column}
+\begin{column}{.05\textwidth}
+\centering $\mapsto$
+\end{column}\pause
+\begin{column}{.2\textwidth}
+\centering\only<-3>{\input{figures/witness_dag}}\only<4->{\input{figures/witness_dag_extended}}
+\end{column}
+\begin{column}{.4\textwidth}
+\b{Witness DAG} $\hat{G}$
+
+$B_i \longrightarrow B_j$ iff $i < j$ and $B_i$ affects $B_j$
+\end{column}
+\end{columns}\pause\pause
+
+\follows $\hat{G}$ is always a DAG!
+\end{block}
+\end{frame}
+
+\begin{frame}{Counting Resamples}
+\begin{block}{Mapping from resamples}
+\begin{columns}
+\begin{column}{.15\textwidth}
+resampling of $B_4$
+\end{column}
+\begin{column}{.05\textwidth}
+\centering $\mapsto$
+\end{column}
+\begin{column}{.2\textwidth}
+\centering\input{figures/witness_dag_subgraph}
+\end{column}
+\begin{column}{.1\textwidth}
+\end{column}
+\end{columns}\pause
+
+Observe: Given a resampling table and $\hat{G}(B_i)$, we can uniquely reconstruct the values of $\var{B_i}$ before \& after resampling $B_i$.\pause\par
+\follows the mapping is injective!\pause\spadding
+
+% Also: The reconstructed configuration at step $i$ is sampled according to $\Omega$.
+\end{block}
+\end{frame}
+
+\begin{frame}{Counting Resamples}
+Do we map resamples to \emph{all} witness DAGs?\pause\par
+No! \follows we can improve our counting!\pause\spadding
+
+\begin{itemize}
+    \item $\hat{G}(B_i)$ always has a single sink (set denoted $\G$)\pause
+    \item Given resampling table $R$, not all single-sink witness DAGs $G$ correspond to a possible resample!\pause
+    
+    % TODO
+    
+    \follows $G$ \& $R$ must be \b{compatible} \pause(denoted $\Phi(G, R)$, set $\compat{\G}{R}$)\pause\spadding
+    
+    Note: $\Pr[R\sim\Omega]{\Phi(G,R)} \pause= \prod_{B \in G} \Pr{B} \pause\eqdef w(G)$.
+\end{itemize}\pause\spadding
+
+\follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause\padding
+
+$\E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\Phi(G,R)} \pause= \sum_{G\in\G} w(G) \eqdef \underbrace{w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}$.
 \end{frame}
 
 % \subsection{Counting Resamples with Witness DAGs}
