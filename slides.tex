@@ -86,16 +86,18 @@
 \def\b{\textcolor{blue}}
 \def\r{\textcolor{red}}
 \def\g#1{{\usebeamercolor[fg]{block title example}{#1}}}
+\definecolor{softgreen}{RGB}{124,216,23}
 
-% % fix for \pause in align
-% \makeatletter
-% \let\save@measuring@true\measuring@true
-% \def\measuring@true{%
-%   \save@measuring@trueoread{##1}}{}}%
-%   \def\beamer@sortzeroread##1<##2>{}%
-%   \def\beamer@finalnospec{}%
-% }
-% \makeatother
+% fix for \pause in align
+\makeatletter
+\let\save@measuring@true\measuring@true
+\def\measuring@true{%
+  \save@measuring@true
+  \def\beamer@sortzero##1{\beamer@ifnextcharospec{\beamer@sortzeroread{##1}}{}}%
+  \def\beamer@sortzeroread##1<##2>{}%
+  \def\beamer@finalnospec{}%
+}
+\makeatother
 
 % \DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
 \NewDocumentCommand{\follows}{}{\ensuremath{\rightsquigarrow}\hspace{0.5em}}
@@ -108,7 +110,7 @@
 \NewDocumentCommand{\G}{}{\mathcal{G}}
 \NewDocumentCommand{\pmax}{}{p_\mathrm{max}}
 \NewDocumentCommand{\var}{m}{\mathrm{var}(#1)}
-\NewDocumentCommand{\compat}{mm}{#1/#2}
+\NewDocumentCommand{\compat}{mm}{#1[#2]}
 
 \usepackage[sorting=ynt,style=alphabetic]{biblatex}
 \addbibresource{sources.bib}
@@ -138,17 +140,17 @@
 \section{Introduction}
 \subsection{Lovász Local Lemma and the MT Algorithm}
 \begin{frame}{Setting}
-Distribution $\Omega$ over independent $\Sigma$-valued coordinates $X_1, \dots, X_n$.
-``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq [n]$.\pause
+Distribution $D$ over independent $\Sigma$-valued coordinates $X_1, \dots, X_n$.
+``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$.\pause
 
 \begin{example}[3-SAT]
 \begin{columns}
 \begin{column}{.3\textwidth}
 $\begin{aligned}
-B_1 &\defeq f_1(X_1,X_5,X_8) \\
-B_2 &\defeq f_2(X_2,X_5,X_{10}) \\
-B_3 &\defeq f_3(X_1,X_8,X_{10}) \\
-B_4 &\defeq f_4(X_2,X_6,X_{11})
+B_1 &\defeq f_1(X_1,X_3,X_5) \\
+B_2 &\defeq f_2(X_2,X_3,X_6) \\
+B_3 &\defeq f_3(X_1,X_5,X_6) \\
+B_4 &\defeq f_4(X_2,X_4,X_7)
 \end{aligned}$
 \end{column}
 \begin{column}{.3\textwidth}
@@ -164,25 +166,36 @@ If for any $i$, $\Pr{B_i} \leq \pmax$ and $B_i$ affects at most $d$ bad-events, 
 For \g{$k$-SAT}, $p=2^{-k}$ \follows satisfiable if any literal appears in at most $d = \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
 \end{frame}
 
+\begin{frame}{Applications}
+% TODO
+
+\follows algorithmic versions of the Lovász Local Lemma yield automatic algorithms for these problems!
+\end{frame}
+
 \begin{frame}{Prior Work}
 \begin{algorithm}[H]
     \TitleOfAlgo{MT-Algorithm}
-    Draw $X$ from distribution $\Omega$\;
+    Draw $X$ from distribution $D$\;
     \While{some bad-event is true on $X$}{
         Select any true bad-event $B$\;
-        For each $i \in \var{B}$, draw $X_i$ from its distribution in $\Omega$\;
+        For each $i \in \var{B}$, draw $X_i$ from its distribution in $D$\;
     }
 \end{algorithm}\pause
-\follows converges within $\O{m}$ iterations in expectation.\footfullcite{moser2010constructive}\pause\spadding
+\follows converges within $\O{m}$ iterations in expectation.\footfullcite{moser2010constructive}
+\end{frame}
 
+\subsection{Prior Work}
+\begin{frame}{Prior Work}
 What about deterministic algorithms?\pause\par
-Polynomial-time algorithm if $e \pmax d \leq 1$ for any constant $\epsilon > 0$.\footfullcite{chandrasekaran2013deterministic}
+Polynomial-time algorithm if $e \pmax^{1-\epsilon} d \leq 1$ for any constant $\epsilon > 0$.\footfullcite{chandrasekaran2013deterministic}
+
+% TODO
 \end{frame}
 
 \subsection{Overview of Results}
 \begin{frame}{Contributions}
 \begin{enumerate}
-    \item \emph{Deterministic algorithm} with a simpler \& weaker condition that is satisfied by \emph{most} variants of the LLL.\pause
+    \item \emph{Deterministic algorithm} with a simpler \& more general condition that is satisfied by \emph{most} variants of the LLL.\pause
     \item Faster \emph{parallel algorithm} with simpler conditions.\pause
     \item Algorithm that finds a configuration avoiding bad events such that the (weighted) probability of some auxiliary events is not much more than their expectation.
 \end{enumerate}
@@ -195,17 +208,19 @@ Polynomial-time algorithm if $e \pmax d \leq 1$ for any constant $\epsilon > 0$.
 \end{frame}
 
 \begin{frame}{Alternative Characterization of MT Algorithm}
-Consider the \b{resampling table} $R$ drawn according to distribution $\Omega$:\spadding
+Consider the \b{resampling table} $R$ drawn according to distribution $D$:\spadding
 
 \begin{columns}
-\begin{column}{.2\textwidth}
-\input{figures/resampling_table}\pause
+\begin{column}{.25\textwidth}
+\input{figures/resampling_table}\vspace{0.15em}\pause
 \end{column}\pause
-\begin{column}{.2\textwidth}
-\flushright $\overset{\text{resampling $X_1$}}{\follows}$
+\begin{column}{.1\textwidth}
+\centering $\overset{\text{resampling $X_1$}}{\follows}$
 \end{column}
 \begin{column}{.3\textwidth}
-\hspace{-2em}\input{figures/shifted_resampling_table}
+\input{figures/shifted_resampling_table}
+\end{column}
+\begin{column}{.05\textwidth}
 \end{column}
 \end{columns}\pause
 
@@ -214,25 +229,25 @@ When resampling $B_i$, shift rows $\var{B_i}$ to left.\pause\padding
 \follows MT algorithm deterministic with respect to resampling table!
 \end{frame}
 
-\subsection{Outline}
-\begin{frame}{Outline}
-    Goal: Find a resampling table such that after poly. resamples all bad-events are avoided.\spadding
+% \subsection{Outline}
+% \begin{frame}{Outline}
+%     Goal: Find a resampling table such that after poly. resamples all bad-events are avoided.\spadding
     
-    Idea: Choose $R$ such that the MT algorithm only performs resamples that the randomized variant is likely to perform.\pause\padding
+%     Idea: Choose $R$ such that the MT algorithm only performs resamples that the randomized variant is likely to perform.\pause\padding
     
-    \begin{enumerate}
-        \item Construct set of unlikely resamples of randomized MT algorithm.\pause
-        \item Use method of conditional expectations to find a resampling table $R$ such that all of these resamplings are avoided.\pause
-        \item Simulate MT algorithm using $R$.
-    \end{enumerate}
-\end{frame}
+%     \begin{enumerate}
+%         \item Construct set of unlikely resamples of randomized MT algorithm.\pause
+%         \item Use method of conditional expectations to find a resampling table $R$ such that all of these resamplings are avoided.\pause
+%         \item Simulate MT algorithm using $R$.
+%     \end{enumerate}
+% \end{frame}
 
 \subsection{Counting Resamples}
 \begin{frame}{Counting Resamples}
 Find an injective mapping from resamples to some ``countable'' structure.\pause
 
-\begin{block}{Mapping from executions}
-Note: Given a resampling table $R$, a \b{(partial) execution} of the MT algorithm is described by the sequence of resampled bad-events.\spadding
+\begin{block}{Why may executions be long?}
+Given a resampling table $R$, a \b{(partial) execution} of the MT algorithm is described by the sequence of resampled bad-events.\pause\spadding
 
 \begin{columns}
 \begin{column}{.15\textwidth}
@@ -244,37 +259,65 @@ Note: Given a resampling table $R$, a \b{(partial) execution} of the MT algorith
 \begin{column}{.2\textwidth}
 \centering\only<-3>{\input{figures/witness_dag}}\only<4->{\input{figures/witness_dag_extended}}
 \end{column}
-\begin{column}{.4\textwidth}
+\begin{column}{.3\textwidth}
 \b{Witness DAG} $\hat{G}$
 
-$B_i \longrightarrow B_j$ iff $i < j$ and $B_i$ affects $B_j$
+$B_i \longrightarrow B_j$ iff $i < j$\par and $B_i$ affects $B_j$
 \end{column}
 \end{columns}\pause\pause
 
-\follows $\hat{G}$ is always a DAG!
+\follows $\hat{G}$ is always a DAG!\pause\ But why use DAGs?
 \end{block}
 \end{frame}
 
 \begin{frame}{Counting Resamples}
-\begin{block}{Mapping from resamples}
-\begin{columns}
-\begin{column}{.15\textwidth}
-resampling of $B_4$
-\end{column}
-\begin{column}{.05\textwidth}
-\centering $\mapsto$
-\end{column}
-\begin{column}{.2\textwidth}
-\centering\input{figures/witness_dag_subgraph}
+We can reconstruct the final configuration of the MT algorithm!\spadding
+
+\begin{columns}[T]
+\begin{column}{.4\textwidth}
+\centering\input{figures/witness_dag_final}\spadding
+
+{\small
+\vspace{-2em}\begin{align*}
+\var{B_1} = \{X_1,X_3,X_5\} \\
+\var{B_2} = \{X_2,X_3,X_6\} \\
+\var{B_3} = \{X_1,X_5,X_6\} \\
+\var{B_4} = \{X_2,X_4,X_7\}
+\end{align*}
+}
+\end{column}\pause
+\begin{column}{.4\textwidth}
+\centering\input{figures/resampling_table_wdag}\spadding
+
+\onslide<2->{fixed resampling table $R$}
+\only<3->{resamples: \b{$B_1$}}\only<4->{, \textcolor{softgreen}{$B_2$}}\only<5-7>{, \textcolor{orange}{$B_3$}}\only<6,9->{, \r{$B_4$}}\only<10->{, \textcolor{orange}{$B_3$}}
 \end{column}
 \begin{column}{.1\textwidth}
 \end{column}
-\end{columns}\pause
+\end{columns}\spadding
 
-Observe: Given a resampling table and $\hat{G}(B_i)$, we can uniquely reconstruct the values of $\var{B_i}$ before \& after resampling $B_i$.\pause\par
-\follows the mapping is injective!\pause\spadding
+\onslide<11->{\follows may encode multiple executions, but \emph{all} lead to the same final configuration!}
+
+\onslide<12->{\follows bad-events depend on \emph{disjoint} entries of $R$!}
+
+
+% TODO
+
+% Observe: Given a resampling table and $\hat{G}(B_i)$, we can uniquely reconstruct the values of $\var{B_i}$ before \& after resampling $B_i$.\pause\par
+% \follows the mapping is injective!\pause\spadding
 
 % Also: The reconstructed configuration at step $i$ is sampled according to $\Omega$.
+\end{frame}
+
+\begin{frame}{Counting Resamples}
+\begin{block}{Witness DAG of resamples}
+\begin{center}
+\input{figures/witness_dag_subgraph}
+\end{center}
+
+Observe: Given a resampling table $R$, $\hat{G}(B_t)$ explains the values of $\var{B_t}$ before \& after resampling $B_t$.\pause\spadding
+
+\follows we have an injective mapping!
 \end{block}
 \end{frame}
 
@@ -284,18 +327,18 @@ No! \follows we can improve our counting!\pause\spadding
 
 \begin{itemize}
     \item $\hat{G}(B_i)$ always has a single sink (set denoted $\G$)\pause
-    \item Given resampling table $R$, not all single-sink witness DAGs $G$ correspond to a possible resample!\pause
+    \item Given resampling table $R$, do all single-sink witness DAGs $G$ correspond to a possible resample?\pause
     
-    % TODO
+    \follows No! \pause$G$ \& $R$ must be \b{compatible} (set denoted $\compat{\G}{R}$)\pause\spadding
     
-    \follows $G$ \& $R$ must be \b{compatible} \pause(denoted $\Phi(G, R)$, set $\compat{\G}{R}$)\pause\spadding
-    
-    Note: $\Pr[R\sim\Omega]{\Phi(G,R)} \pause= \prod_{B \in G} \Pr{B} \pause\eqdef w(G)$.
+    Note: $\Pr[R \sim D]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \Pr{B} \pause\eqdef w(G)$.
 \end{itemize}\pause\spadding
 
-\follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause\padding
+\follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause
 
-$\E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\Phi(G,R)} \pause= \sum_{G\in\G} w(G) \eqdef \underbrace{w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}$.
+\vspace{-1.5em}\begin{align*}
+    \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} \pause= \sum_{G\in\G} w(G) \eqdef \underbrace{w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}.
+\end{align*}
 \end{frame}
 
 % \subsection{Counting Resamples with Witness DAGs}
