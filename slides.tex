@@ -390,7 +390,7 @@ But can $R$ be computed efficiently?\pause\spadding
 
 For each cell of $R$, choose one of $|\Sigma|$ values to minimize the conditional probability of $G$ \& $R$ being compatible for each $G \in \U$.\pause\spadding
 
-\follows $\O{|\U| \cdot n |\L| \cdot |\Sigma| \cdot |\L| T}$\pause, where $T$ is the runtime of computing conditional probabilities of bad-events given a partial resampling table.\pause\par
+\follows $\O{n |\L| \cdot |\Sigma| \cdot |\L| T \cdot |\U|}$\pause, where $T$ is the runtime of computing conditional probabilities of bad-events given a partial resampling table.\pause\par
 Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
 \end{frame}
 
