@@ -108,8 +108,12 @@
 \RenewDocumentCommand{\O}{m}{\mathcal{O}(#1)}
 \NewDocumentCommand{\B}{}{\mathcal{B}}
 \NewDocumentCommand{\G}{}{\mathcal{G}}
+\RenewDocumentCommand{\L}{}{\r{\ensuremath{\mathcal{L}_\tau}}}
+\NewDocumentCommand{\U}{}{\b{\ensuremath{\mathcal{U}_\tau}}}
 \NewDocumentCommand{\pmax}{}{p_\mathrm{max}}
 \NewDocumentCommand{\var}{m}{\mathrm{var}(#1)}
+\NewDocumentCommand{\maxsize}{m}{\mathrm{maxsize}(#1)}
+\NewDocumentCommand{\poly}{m}{\mathrm{poly}(#1)}
 \NewDocumentCommand{\compat}{mm}{#1[#2]}
 
 \usepackage[sorting=ynt,style=alphabetic]{biblatex}
@@ -202,11 +206,11 @@ Polynomial-time algorithm if $e \pmax^{1-\epsilon} d \leq 1$ for any constant $\
 \end{frame}
 
 \section{Background}
-\subsection{Alternative Characterization of MT Algorithm}
 \begin{frame}{Plan}
 \tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
 \end{frame}
 
+\subsection{Alternative Characterization of MT Algorithm}
 \begin{frame}{Alternative Characterization of MT Algorithm}
 Consider the \b{resampling table} $R$ drawn according to distribution $D$:\spadding
 
@@ -300,6 +304,8 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 
 \onslide<12->{\follows bad-events depend on \emph{disjoint} entries of $R$!}
 
+\onslide<13->{\follows configuration at step $t$ is drawn according to $D$!}
+
 
 % TODO
 
@@ -331,7 +337,7 @@ No! \follows we can improve our counting!\pause\spadding
     
     \follows No! \pause$G$ \& $R$ must be \b{compatible} (set denoted $\compat{\G}{R}$)\pause\spadding
     
-    Note: $\Pr[R \sim D]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \Pr{B} \pause\eqdef w(G)$.
+    \underline{Note}: $\Pr[R \sim D]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \Pr{B} \pause\eqdef w(G)$.
 \end{itemize}\pause\spadding
 
 \follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause
@@ -339,6 +345,53 @@ No! \follows we can improve our counting!\pause\spadding
 \vspace{-1.5em}\begin{align*}
     \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} \pause= \sum_{G\in\G} w(G) \eqdef \underbrace{w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}.
 \end{align*}
+\end{frame}
+
+\section{A Deterministic Algorithm}
+\begin{frame}{Plan}
+\tableofcontents[currentsection, sectionstyle=show/shaded, hideothersubsections]
+\end{frame}
+
+\subsection{Likely \& Unlikely Resamples}
+\begin{frame}{Likely \& Unlikely Resamples}
+Want to find resampling table $R$ such that $|\compat{\G}{R}|$ is polynomial.\pause\par
+Idea: choose $R$ such that unlikely resamples are avoided!
+
+\begin{columns}[T]
+\begin{column}{.55\textwidth}
+\g{Example}\quad $w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
+
+\only<6->{For a threshold $\tau$, \begin{itemize}
+    \item let $\L$ be the set of \b{likely} witness DAGs, $w(G) \geq \tau$\only<7->{;
+    \item let $\U$ be the set of \b{(most likely) unlikely} witness DAGs, $w(G) < \tau$ such that all prefixes are likely.}
+\end{itemize}}
+
+\only<8->{\underline{Note}: Fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\G}{R} \subseteq \compat{\L}{R}$.}
+\end{column}
+\begin{column}{.36\textwidth}
+\centering\input{figures/likely_unlikely_wdags}
+\flushright\small $G$, suppose $\Pr{B_i} = \nicefrac{1}{2}$.
+\end{column}
+\end{columns}\spadding
+
+\only<9->{\follows need to trade $\tau$!}
+\end{frame}
+
+\begin{frame}{Finding Resampling Table avoiding $\U$}
+Using the method of conditional expectation, we find $R$ such that \vspace{-0.5em}\begin{align*}
+    |\compat{\U}{R}| \leq \E[R \sim D]{|\compat{\U}{R}|} \pause = w(\U).
+\end{align*}\pause
+
+\vspace{-1.8em}\follows if we choose $\tau$ such that $w(\U) < 1$,\par then $\compat{\U}{R} = \emptyset$ and $\compat{\G}{R} \subseteq \compat{\L}{R}$.\pause\padding
+
+But can $R$ be computed efficiently?\pause\spadding
+
+\underline{Observe}: The MT algorithm uses at most as many columns as the size of the largest witness DAG in $\L$\pause, which is at most $|\L|$.\pause\spadding
+
+For each cell of $R$, choose one of $|\Sigma|$ values to minimize the conditional probability of $G$ \& $R$ being compatible for each $G \in \U$.\pause\spadding
+
+\follows $\O{|\U| \cdot n |\L| \cdot |\Sigma| \cdot |\L| T}$\pause, where $T$ is the runtime of computing conditional probabilities of bad-events given a partial resampling table.\pause\par
+Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
 \end{frame}
 
 % \subsection{Counting Resamples with Witness DAGs}
