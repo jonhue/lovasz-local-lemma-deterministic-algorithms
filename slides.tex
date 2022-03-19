@@ -300,7 +300,7 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 \centering\input{figures/resampling_table_wdag}\spadding
 
 \onslide<2->{fixed resampling table $R$}
-\only<3->{resamples: \b{$B_1$}}\only<4->{, \textcolor{softgreen}{$B_2$}}\only<5-7>{, \textcolor{orange}{$B_3$}}\only<6,9->{, \r{$B_4$}}\only<10->{, \textcolor{orange}{$B_3$}}
+\onslide<3->{resamples: \b{$B_1$}}\onslide<4->{, \textcolor{softgreen}{$B_2$}}\only<5-7>{, \textcolor{orange}{$B_3$}}\onslide<6,9->{, \r{$B_4$}}\onslide<10->{, \textcolor{orange}{$B_3$}}
 \end{column}
 \begin{column}{.1\textwidth}
 \end{column}
@@ -311,14 +311,6 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 \onslide<12->{\follows bad-events depend on \emph{disjoint} entries of $R$!}
 
 \onslide<13->{\follows configuration at step $t$ is drawn according to $D$!}
-
-
-% TODO
-
-% Observe: Given a resampling table and $\hat{G}(B_i)$, we can uniquely reconstruct the values of $\var{B_i}$ before \& after resampling $B_i$.\pause\par
-% \follows the mapping is injective!\pause\spadding
-
-% Also: The reconstructed configuration at step $i$ is sampled according to $\Omega$.
 \end{frame}
 
 \begin{frame}{Counting Resamples}
@@ -450,8 +442,6 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     \end{columns}\pause\pause\pause\pause
     
     We call the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$, $\epsalpha(B)$.\pause\vspace{-0.25em}\begin{align*}
-    %     \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} 1 \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G - B)}{\tau} \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G)}{\tau}
-    % \end{align*} Summing over all $B \in \B$, \vspace{-0.5em}\begin{align*}
         |\U \cup \L| &\leq \frac{1}{\tau} \sum_{B \in \B} \epsalpha(B) \pause\eqdef \frac{\epsW}{\tau} \\
                      &\pause\leq \frac{2 \epsW}{\taumax} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}. && \text{as $\epsw(\U) \leq \epsW$}
     \end{align*}
