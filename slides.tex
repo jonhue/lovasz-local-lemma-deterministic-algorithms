@@ -111,9 +111,13 @@
 \RenewDocumentCommand{\L}{}{\r{\ensuremath{\mathcal{L}_\tau}}}
 \NewDocumentCommand{\U}{}{\b{\ensuremath{\mathcal{U}_\tau}}}
 \NewDocumentCommand{\pmax}{}{p_\mathrm{max}}
+\NewDocumentCommand{\taumax}{}{\ensuremath{\tau_\mathrm{max}}}
 \NewDocumentCommand{\var}{m}{\mathrm{var}(#1)}
 \NewDocumentCommand{\maxsize}{m}{\mathrm{maxsize}(#1)}
 \NewDocumentCommand{\poly}{m}{\mathrm{poly}(#1)}
+\NewDocumentCommand{\law}{}{p}
+\NewDocumentCommand{\w}{}{\ensuremath{w_\law}}
+\NewDocumentCommand{\epsw}{}{\ensuremath{w_{\law^{1-\epsilon}}}}
 \NewDocumentCommand{\compat}{mm}{#1[#2]}
 
 \usepackage[sorting=ynt,style=alphabetic]{biblatex}
@@ -145,7 +149,7 @@
 \subsection{Lovász Local Lemma and the MT Algorithm}
 \begin{frame}{Setting}
 Distribution $D$ over independent $\Sigma$-valued coordinates $X_1, \dots, X_n$.
-``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$.\pause
+``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$ with law $\law$.\pause
 
 \begin{example}[3-SAT]
 \begin{columns}
@@ -164,10 +168,10 @@ B_4 &\defeq f_4(X_2,X_4,X_7)
 \end{example}\pause
 
 \begin{theorem}[(Symmetric) Lovász Local Lemma]
-If for any $i$, $\Pr{B_i} \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\Pr{\text{all $B_i$ avoided}} > 0$.
+If for any $i$, $\law(B_i) \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\Pr{\text{all $B_i$ avoided}} > 0$.
 \end{theorem}\pause\spadding
 
-For \g{$k$-SAT}, $p=2^{-k}$ \follows satisfiable if any literal appears in at most $d = \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
+For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appears in $d \leq \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
 \end{frame}
 
 \begin{frame}{Applications}
@@ -337,13 +341,13 @@ No! \follows we can improve our counting!\pause\spadding
     
     \follows No! \pause$G$ \& $R$ must be \b{compatible} (set denoted $\compat{\G}{R}$)\pause\spadding
     
-    \underline{Note}: $\Pr[R \sim D]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \Pr{B} \pause\eqdef w(G)$.
+    \underline{Note}: $\Pr[R \sim D]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \law(B) \pause\eqdef \w(G)$.
 \end{itemize}\pause\spadding
 
 \follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause
 
 \vspace{-1.5em}\begin{align*}
-    \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} \pause= \sum_{G\in\G} w(G) \eqdef \underbrace{w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}.
+    \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} \pause= \sum_{G\in\G} \w(G) \eqdef \underbrace{\w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}.
 \end{align*}
 \end{frame}
 
@@ -359,18 +363,18 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 
 \begin{columns}[T]
 \begin{column}{.55\textwidth}
-\g{Example}\quad $w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
+\g{Example}\quad $\w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
 
-\only<6->{For a threshold $\tau$, \begin{itemize}
-    \item let $\L$ be the set of \b{likely} witness DAGs, $w(G) \geq \tau$\only<7->{;
-    \item let $\U$ be the set of \b{(most likely) unlikely} witness DAGs, $w(G) < \tau$ such that all prefixes are likely.}
+\only<6->{For a threshold $\tau \in [0,1]$, \begin{itemize} % TODO: L & U are subsets of collectible witness DAGs
+    \item let $\L \subseteq \G$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
+    \item let $\U \subseteq \G$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all prefixes are likely.}
 \end{itemize}}
 
 \only<8->{\underline{Note}: Fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\G}{R} \subseteq \compat{\L}{R}$.}
 \end{column}
 \begin{column}{.36\textwidth}
 \centering\input{figures/likely_unlikely_wdags}
-\flushright\small $G$, suppose $\Pr{B_i} = \nicefrac{1}{2}$.
+\flushright\small $G$, suppose $\law \equiv \nicefrac{1}{2}$.
 \end{column}
 \end{columns}\spadding
 
@@ -379,10 +383,10 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 
 \begin{frame}{Finding Resampling Table avoiding $\U$}
 Using the method of conditional expectation, we find $R$ such that \vspace{-0.5em}\begin{align*}
-    |\compat{\U}{R}| \leq \E[R \sim D]{|\compat{\U}{R}|} \pause = w(\U).
+    |\compat{\U}{R}| \leq \E[R \sim D]{|\compat{\U}{R}|} \pause = \w(\U).
 \end{align*}\pause
 
-\vspace{-1.8em}\follows if we choose $\tau$ such that $w(\U) < 1$,\par then $\compat{\U}{R} = \emptyset$ and $\compat{\G}{R} \subseteq \compat{\L}{R}$.\pause\padding
+\vspace{-1.8em}\follows if we choose $\tau$ such that $\w(\U) < 1$,\par then $\compat{\U}{R} = \emptyset$ and $\compat{\G}{R} \subseteq \compat{\L}{R}$.\pause\padding
 
 But can $R$ be computed efficiently?\pause\spadding
 
@@ -392,6 +396,66 @@ For each cell of $R$, choose one of $|\Sigma|$ values to minimize the conditiona
 
 \follows $\O{n |\L| \cdot |\Sigma| \cdot |\L| T \cdot |\U|}$\pause, where $T$ is the runtime of computing conditional probabilities of bad-events given a partial resampling table.\pause\par
 Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
+\end{frame}
+
+\begin{frame}{Choosing the Threshold}
+Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial size?\pause
+
+\begin{enumerate}
+    \item What is the largest $\tau$ guaranteeing $\w(\U) < 1$?\pause\spadding
+    
+    For $G \in \U$, we know $\w(G) < \tau$.\pause\par
+    \underline{Note}: For $\epsilon > 0$, $\w(G) = \epsw(G)^{\nicefrac{1}{(1-\epsilon)}} \pause< \tau^\epsilon \epsw(G)$\par if we choose $\U$ and $\L$ based on $\epsw$ (this we do from now on!).\pause\par
+    \follows $\w(\U) < \tau^\epsilon \epsw(\U)$.\pause\par
+    \follows for $\tau \leq \epsw(\U)^{-\nicefrac{1}{\epsilon}} \eqdef \taumax$, we have $\w(\U) < 1$.\pause
+    
+    \vspace{0.3em}\begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+    How do we compute $\tau$?\pause\par
+    Use exponential backoff!
+    
+    \g{Example}\quad $\tau = \only<9-10>{2^0 = 1}\only<11>{2^{-1} = \nicefrac{1}{2}}\only<12>{2^{-2} = \nicefrac{1}{4}}\only<13->{2^{-3} = \nicefrac{1}{8}}$.\pause\vspace{0.25em}
+    
+    \only<14->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
+    
+    \only<15->{Are $\U$ and $\L$ of polynomial size?}
+    \end{column}
+    \begin{column}{0.12\textwidth}
+    \centering\input{figures/exp_backoff}
+    \end{column}
+    \begin{column}{0\textwidth}
+    \end{column}
+    \end{columns}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Choosing the Threshold}
+    \begin{enumerate}
+        \setcounter{enumi}{1}
+        \item Is $\U \cup \L$ of polynomial size?\pause\spadding
+        
+        \underline{Observe}: Removing the sink $B$ from $G \in \U \cup \L$,\par we have $\epsw(G - B) \geq \tau$.\pause\spadding
+        
+        This allows us to count the elements! \vspace{-0.5em}\begin{align*}
+        %     \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} 1 \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G - B)}{\tau} \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G)}{\tau}
+        % \end{align*} Summing over all $B \in \B$, \vspace{-0.5em}\begin{align*}
+            |\U \cup \L| &\leq \frac{\epsw(\U \cup \L)}{\tau} \pause\leq \frac{\epsw(\G)}{\tau} \\
+                         &\pause\leq \frac{2 \epsw(\G)}{\taumax} = 2 \epsw(\G)^{1+\frac{1}{\epsilon}}.
+        \end{align*}
+    \end{enumerate}
+\end{frame}
+
+\subsection{The Algorithm}
+\begin{frame}{The Algorithm}
+\begin{algorithm}[H]
+\TitleOfAlgo{Deterministic MT-Algorithm}
+Select threshold $\tau$ such that $\w(\U) < 1$ and $|\U \cup \L| \leq 2 \epsw(\G)^{1+\frac{1}{\epsilon}}$\;\pause
+Generate the witness DAGs $\U$\;\pause
+Find resampling table $R$ avoiding $\U$\;\pause
+Run the deterministic MT algorithm on $R$\;
+\end{algorithm}\pause\spadding
+
+We have seen that the final step takes at most $|\compat{\G}{R}| \leq |\compat{\L}{R}|$ iterations!
 \end{frame}
 
 % \subsection{Counting Resamples with Witness DAGs}
@@ -437,10 +501,10 @@ Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
     
 % \end{frame}
 
-% \begin{frame}{}
-%     \centering \large
-%     Thanks for your attention!
-%     Questions?
-% \end{frame}
+\begin{frame}{}
+    \centering \large
+    Thanks for your attention!
+    Questions?
+\end{frame}
 
 \end{document}
