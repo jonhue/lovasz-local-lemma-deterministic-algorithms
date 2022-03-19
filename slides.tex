@@ -118,6 +118,8 @@
 \NewDocumentCommand{\law}{}{p}
 \NewDocumentCommand{\w}{}{\ensuremath{w_\law}}
 \NewDocumentCommand{\epsw}{}{\ensuremath{w_{\law^{1-\epsilon}}}}
+\NewDocumentCommand{\epsalpha}{}{\ensuremath{\alpha_{\law^{1-\epsilon}}}}
+\NewDocumentCommand{\epsW}{}{\ensuremath{W_\epsilon}}
 \NewDocumentCommand{\compat}{mm}{#1[#2]}
 
 \usepackage[sorting=ynt,style=alphabetic]{biblatex}
@@ -259,13 +261,13 @@ Given a resampling table $R$, a \b{(partial) execution} of the MT algorithm is d
 
 \begin{columns}
 \begin{column}{.15\textwidth}
-\centering $B_1, B_2, B_3\onslide<4->{, \r{B_4}}$
+\centering $B_1, B_2, B_3\onslide<5->{, \r{B_4}}$
 \end{column}
 \begin{column}{.05\textwidth}
 \centering $\mapsto$
 \end{column}\pause
 \begin{column}{.2\textwidth}
-\centering\only<-3>{\input{figures/witness_dag}}\only<4->{\input{figures/witness_dag_extended}}
+\centering\only<-4>{\input{figures/witness_dag}}\only<5->{\input{figures/witness_dag_extended}}
 \end{column}
 \begin{column}{.3\textwidth}
 \b{Witness DAG} $\hat{G}$
@@ -365,12 +367,12 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \begin{column}{.55\textwidth}
 \g{Example}\quad $\w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
 
-\only<6->{For a threshold $\tau \in [0,1]$, \begin{itemize} % TODO: L & U are subsets of collectible witness DAGs
+\onslide<6->{For a threshold $\tau \in [0,1]$, \begin{itemize} % TODO: L & U are subsets of collectible witness DAGs
     \item let $\L \subseteq \G$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
     \item let $\U \subseteq \G$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all prefixes are likely.}
 \end{itemize}}
 
-\only<8->{\underline{Note}: Fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\G}{R} \subseteq \compat{\L}{R}$.}
+\onslide<8->{\underline{Note}: Fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\G}{R} \subseteq \compat{\L}{R}$.}
 \end{column}
 \begin{column}{.36\textwidth}
 \centering\input{figures/likely_unlikely_wdags}
@@ -378,7 +380,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \end{column}
 \end{columns}\spadding
 
-\only<9->{\follows need to trade $\tau$!}
+\onslide<9->{\follows need to trade $\tau$!}
 \end{frame}
 
 \begin{frame}{Finding Resampling Table avoiding $\U$}
@@ -405,7 +407,7 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     \item What is the largest $\tau$ guaranteeing $\w(\U) < 1$?\pause\spadding
     
     For $G \in \U$, we know $\w(G) < \tau$.\pause\par
-    \underline{Note}: For $\epsilon > 0$, $\w(G) = \epsw(G)^{\nicefrac{1}{(1-\epsilon)}} \pause< \tau^\epsilon \epsw(G)$\par if we choose $\U$ and $\L$ based on $\epsw$ (this we do from now on!).\pause\par
+    \underline{Note}: For $\epsilon > 0$, $\w(G) = \epsw(G)^{\nicefrac{1}{(1-\epsilon)}} \pause< \tau^\epsilon \epsw(G)$\par if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$\par (this we do from now on!).\pause\par
     \follows $\w(\U) < \tau^\epsilon \epsw(\U)$.\pause\par
     \follows for $\tau \leq \epsw(\U)^{-\nicefrac{1}{\epsilon}} \eqdef \taumax$, we have $\w(\U) < 1$.\pause
     
@@ -416,9 +418,9 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     
     \g{Example}\quad $\tau = \only<9-10>{2^0 = 1}\only<11>{2^{-1} = \nicefrac{1}{2}}\only<12>{2^{-2} = \nicefrac{1}{4}}\only<13->{2^{-3} = \nicefrac{1}{8}}$.\pause\vspace{0.25em}
     
-    \only<14->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
+    \onslide<14->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
     
-    \only<15->{Are $\U$ and $\L$ of polynomial size?}
+    \onslide<15->{Are $\U$ and $\L$ of polynomial size?}
     \end{column}
     \begin{column}{0.12\textwidth}
     \centering\input{figures/exp_backoff}
@@ -430,26 +432,37 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
 \end{frame}
 
 \begin{frame}{Choosing the Threshold}
-    \begin{enumerate}
-        \setcounter{enumi}{1}
-        \item Is $\U \cup \L$ of polynomial size?\pause\spadding
-        
-        \underline{Observe}: Removing the sink $B$ from $G \in \U \cup \L$,\par we have $\epsw(G - B) \geq \tau$.\pause\spadding
-        
-        This allows us to count the elements! \vspace{-0.5em}\begin{align*}
-        %     \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} 1 \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G - B)}{\tau} \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G)}{\tau}
-        % \end{align*} Summing over all $B \in \B$, \vspace{-0.5em}\begin{align*}
-            |\U \cup \L| &\leq \frac{\epsw(\U \cup \L)}{\tau} \pause\leq \frac{\epsw(\G)}{\tau} \\
-                         &\pause\leq \frac{2 \epsw(\G)}{\taumax} = 2 \epsw(\G)^{1+\frac{1}{\epsilon}}.
-        \end{align*}
-    \end{enumerate}
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item Is $\U \cup \L$ of polynomial size?\pause\spadding
+    
+    \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+    \underline{Observe}: Removing the sink $B$ from $G \in \U \cup \L$,\par we have $\epsw(G - B) \geq \tau$.\spadding
+    
+    \onslide<5->{But $G - B$ is not necessarily single-sink! Its \textcolor{orange}{sinks} are an independent set adjacent to $B$ in $G$.}
+    \end{column}
+    \begin{column}{0.1\textwidth}
+    \centering\vspace{-2em}\input{figures/likely_unlikely_wdags_removing_sink}
+    \end{column}
+    \begin{column}{0\textwidth}
+    \end{column}
+    \end{columns}\pause\pause\pause\pause
+    
+    We call the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$, $\epsalpha(B)$.\pause\vspace{-0.25em}\begin{align*}
+    %     \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} 1 \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G - B)}{\tau} \leq \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G)}{\tau}
+    % \end{align*} Summing over all $B \in \B$, \vspace{-0.5em}\begin{align*}
+        |\U \cup \L| &\leq \frac{1}{\tau} \sum_{B \in \B} \epsalpha(B) \pause\eqdef \frac{\epsW}{\tau} \\
+                     &\pause\leq \frac{2 \epsW}{\taumax} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}. && \text{as $\epsw(\U) \leq \epsW$}
+    \end{align*}
+\end{enumerate}
 \end{frame}
 
 \subsection{The Algorithm}
 \begin{frame}{The Algorithm}
 \begin{algorithm}[H]
-\TitleOfAlgo{Deterministic MT-Algorithm}
-Select threshold $\tau$ such that $\w(\U) < 1$ and $|\U \cup \L| \leq 2 \epsw(\G)^{1+\frac{1}{\epsilon}}$\;\pause
+\TitleOfAlgo{Deterministic MT-Algorithm}\pause
+Select threshold $\tau$ such that $\w(\U) < 1$ and $|\U \cup \L| \leq \epsW^{\O{\nicefrac{1}{\epsilon}}}$\;\pause
 Generate the witness DAGs $\U$\;\pause
 Find resampling table $R$ avoiding $\U$\;\pause
 Run the deterministic MT algorithm on $R$\;
