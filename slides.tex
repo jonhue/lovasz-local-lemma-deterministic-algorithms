@@ -396,12 +396,20 @@ Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
 Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial size?\pause
 
 \begin{enumerate}
-    \item What is the largest $\tau$ guaranteeing $\w(\U) < 1$?\pause\spadding
+    \item What is the largest $\tau$ guaranteeing $\w(\U) < 1$?\pause
+
+    % wiggle proportional to weight of object (if weight of object depends on \tau, wiggle depends on \tau)    
+    \input{figures/wiggle}\pause\vspace{-1em}
     
-    For $G \in \U$, we know $\w(G) < \tau$.\pause\par
-    \underline{Note}: For $\epsilon > 0$, $\w(G) = \epsw(G)^{\nicefrac{1}{(1-\epsilon)}} \pause< \tau^\epsilon \epsw(G)$\par if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$\par (this we do from now on!).\pause\par
-    \follows $\w(\U) < \tau^\epsilon \epsw(\U)$.\pause\par
-    \follows for $\tau \leq \epsw(\U)^{-\nicefrac{1}{\epsilon}} \eqdef \taumax$, we have $\w(\U) < 1$.\pause
+    For $G \in \U$, by how much does $\w(G)$ change\par (depending on $\tau$) when perturbing $p$?\pause\par
+    We compare $\w$ and $\epsw$\pause\ \follows $\w(\U) < \tau^\epsilon \epsw(\U)$\pause\ if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$.\pause\spadding
+    
+    Need to ensure that the effect of perturbing $p$ is small enough!\pause\ \follows for $\tau^\epsilon \leq \epsw(\U)^{-1}$, we have $\w(\U) < 1$\pause\ \follows $\taumax$.
+    
+    % For $G \in \U$, we know $\w(G) < \tau$.\pause\par
+    % \underline{Note}: For $\epsilon > 0$, $\w(G) = \epsw(G)^{\nicefrac{1}{(1-\epsilon)}} \pause< \tau^\epsilon \epsw(G)$\par if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$\par (this we do from now on!).\pause\par
+    % \follows $\w(\U) < \tau^\epsilon \epsw(\U)$.\pause\par
+    % \follows for $\tau \leq \epsw(\U)^{-\nicefrac{1}{\epsilon}} \eqdef \taumax$, we have $\w(\U) < 1$.\pause
     
     \vspace{0.3em}\begin{columns}[T]
     \begin{column}{0.4\textwidth}
@@ -426,7 +434,7 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
 \begin{frame}{Choosing the Threshold}
 \begin{enumerate}
     \setcounter{enumi}{1}
-    \item Is $\U \cup \L$ of polynomial size?\pause\spadding
+    \item Is $\U \cup \L$ of polynomial size?\pause\vspace{0.25em}
     
     \begin{columns}[T]
     \begin{column}{0.42\textwidth}
@@ -442,8 +450,8 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     \end{columns}\pause\pause\pause\pause
     
     We call the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$, $\epsalpha(B)$.\pause\vspace{-0.25em}\begin{align*}
-        |\U \cup \L| &\leq \frac{1}{\tau} \sum_{B \in \B} \epsalpha(B) \pause\eqdef \frac{\epsW}{\tau} \\
-                     &\pause\leq \frac{2 \epsW}{\taumax} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}. && \text{as $\epsw(\U) \leq \epsW$}
+        |\U \cup \L| &\leq \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \epsalpha(B) \\
+                     &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
     \end{align*}
 \end{enumerate}
 \end{frame}
