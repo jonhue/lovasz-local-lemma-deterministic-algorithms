@@ -31,8 +31,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{nicefrac}
-% \usepackage{tabularx}
-% \usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{makecell}
 % \usepackage{amsmath,amsfonts,amsthm,amssymb,mathrsfs,bbm,mathtools}
 % \usepackage{enumitem}
 \usepackage{tikz}
@@ -56,6 +56,10 @@
 % \usepackage{subcaption}
 % \usepackage{ltablex}
 % \usepackage{multirow}
+
+\usepackage{pifont}
+\newcommand{\cmark}{\text{\ding{51}}}
+\newcommand{\xmark}{\text{\ding{55}}}
 
 %--------Pseudocode--------
 \usepackage{xcolor,amsmath}
@@ -115,6 +119,7 @@
 \NewDocumentCommand{\var}{m}{\mathrm{var}(#1)}
 \NewDocumentCommand{\maxsize}{m}{\mathrm{maxsize}(#1)}
 \NewDocumentCommand{\poly}{m}{\mathrm{poly}(#1)}
+\NewDocumentCommand{\polylog}{m}{\mathrm{polylog}(#1)}
 \NewDocumentCommand{\law}{}{p}
 \NewDocumentCommand{\w}{}{\ensuremath{w_\law}}
 \NewDocumentCommand{\epsw}{}{\ensuremath{w_{\law^{1-\epsilon}}}}
@@ -178,6 +183,14 @@ For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appear
 
 \begin{frame}{Applications}
 % TODO
+\begin{enumerate}
+    \item Satisfiability
+    \item Hypergraph colouring
+    \item Defective colouring 
+    \item Strong colouring
+    \item Finding directed cycles of certain length (see exam, task 2 :))
+    \item Independent transversals
+\end{enumerate}\pause
 
 \follows algorithmic versions of the Lovász Local Lemma yield automatic algorithms for these problems!
 \end{frame}
@@ -196,10 +209,20 @@ For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appear
 
 \subsection{Prior Work}
 \begin{frame}{Prior Work}
-What about deterministic algorithms?\pause\par
-Polynomial-time algorithm if $e \pmax^{1-\epsilon} d \leq 1$ for any constant $\epsilon > 0$.\footfullcite{chandrasekaran2013deterministic}
+\small
+\begin{center}
+\begin{tabular}{c|l|l|l}
+ Paper & Criterion & Det.? & Parallel? \\[0.1em]\hline
+ \footfullcite{moser2010constructive}\rule{0pt}{2.6ex} & asymmetric LLL & \xmark & (\cmark) \\
+ \footnotemark[\value{footnote}] & asymmetric LLL and $d \leq \O{1}$ & \cmark & (\cmark) \\
+ \footfullcite{chandrasekaran2013deterministic} & symmetric LLL with $\epsilon$-exponential slack & \cmark & (\cmark) \\
+ \footfullcite{haeupler2017parallel} & Shearer criterion with $\epsilon$-slack & \xmark & \cmark \\ % parallel: $\O{\log^2 n}$
+ \footnotemark[\value{footnote}] & \makecell[lt]{symmetric LLL with $\epsilon$-exponential slack \\ and atomic bad-events} & \cmark & \cmark \\ % parallel: $\O{\log^2 n}$
+ \footfullcite{harris2018deterministic} & \makecell[lt]{symmetric LLL and bad-events \\ depend on $\polylog{n}$ variables} & \cmark & \cmark \\ % parallel: $\O{\log n}$
+\end{tabular}\spadding
 
-% TODO
+(\cmark) : under more complex conditions
+\end{center}
 \end{frame}
 
 \subsection{Overview of Results}
