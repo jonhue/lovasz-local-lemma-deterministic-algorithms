@@ -156,7 +156,7 @@
 \subsection{Lovász Local Lemma and the MT Algorithm}
 \begin{frame}{Setting}
 Distribution $D$ over independent $\Sigma$-valued coordinates $X_1, \dots, X_n$.
-``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$ with law $\law$.\pause
+``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$ with law $\law$.
 
 \begin{example}[3-SAT]
 \begin{columns}
@@ -384,7 +384,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 
 \onslide<6->{For a threshold $\tau \in [0,1]$, \begin{itemize} % TODO: L & U are subsets of collectible witness DAGs
     \item let $\L \subseteq \G$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
-    \item let $\U \subseteq \G$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all prefixes are likely.}
+    \item let $\U \subseteq \G$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all strict prefixes are likely.}
 \end{itemize}}
 
 \onslide<8->{\underline{Note}: Fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\G}{R} \subseteq \compat{\L}{R}$.}
@@ -427,7 +427,7 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     For $G \in \U$, by how much does $\w(G)$ change\par (depending on $\tau$) when perturbing $p$?\pause\par
     We compare $\w$ and $\epsw$\pause\ \follows $\w(\U) < \tau^\epsilon \epsw(\U)$\pause\ if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$.\pause\spadding
     
-    Need to ensure that the effect of perturbing $p$ is small enough!\pause\ \follows for $\tau^\epsilon \leq \epsw(\U)^{-1}$, we have $\w(\U) < 1$\pause\ \follows $\taumax$.
+    Need to ensure that the effect of perturbing $p$ is small enough!\pause\ \follows for $\tau^\epsilon \leq \epsw(\U)^{-1}$, we have $\w(\U) < 1$\pause\ \follows $\taumax$.\pause
     
     % For $G \in \U$, we know $\w(G) < \tau$.\pause\par
     % \underline{Note}: For $\epsilon > 0$, $\w(G) = \epsw(G)^{\nicefrac{1}{(1-\epsilon)}} \pause< \tau^\epsilon \epsw(G)$\par if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$\par (this we do from now on!).\pause\par
