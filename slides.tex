@@ -187,11 +187,18 @@ For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appear
 \end{frame}
 
 \begin{frame}{Applications}
-% TODO
+\begin{example}[k-Coloring]
+Choose $c(v) \sim \text{Unif}([k])$ independently.\pause\par
+$B_{i,v} \defeq c(v) = i$ and $v$ has neighbor with color $i$.\par
+$B_{i,v}$ affects $B_{i',v'}$ iff $v$ and $v'$ have distance $\leq 2$\pause\ \follows $d \leq k \Delta^2$.\pause\par
+$p(B_{i,v}) = \frac{1}{k}(\sum_{u \in N(v)} \frac{1}{k}) \leq \frac{\Delta}{k^2}$\pause\ \follows if $e \Delta^3 \leq k$, has $k$-coloring!
+\end{example}\pause\padding
+
+More applications:
 \begin{enumerate}
-    \item Satisfiability
-    \item Hypergraph colouring
+    % \item Satisfiability
     \item Defective colouring 
+    \item Hypergraph colouring
     \item Strong colouring
     \item Finding directed cycles of certain length (see exam, task 2 :))
     \item Independent transversals
