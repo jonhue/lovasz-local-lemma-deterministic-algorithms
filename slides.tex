@@ -121,8 +121,9 @@
 \NewDocumentCommand{\poly}{m}{\mathrm{poly}(#1)}
 \NewDocumentCommand{\polylog}{m}{\mathrm{polylog}(#1)}
 \NewDocumentCommand{\law}{}{p}
+\NewDocumentCommand{\epslaw}{}{\ensuremath{\law^{1-\epsilon}}}
 \NewDocumentCommand{\w}{}{\ensuremath{w_\law}}
-\NewDocumentCommand{\epsw}{}{\ensuremath{w_{\law^{1-\epsilon}}}}
+\NewDocumentCommand{\epsw}{}{\ensuremath{w_{\epslaw}}}
 \NewDocumentCommand{\epsalpha}{}{\ensuremath{\alpha_{\law^{1-\epsilon}}}}
 \NewDocumentCommand{\epsW}{}{\ensuremath{W_\epsilon}}
 \NewDocumentCommand{\compat}{mm}{#1[#2]}
@@ -155,8 +156,8 @@
 \section{Introduction}
 \subsection{Lovász Local Lemma and the MT Algorithm}
 \begin{frame}{Setting}
-Distribution $D$ over independent $\Sigma$-valued coordinates $X_1, \dots, X_n$.
-``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$ with law $\law$.
+Independent $\Sigma$-valued coordinates $X_1, \dots, X_n$ with law $\law$.
+``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$.
 
 \begin{example}[3-SAT]
 \begin{columns}
@@ -175,10 +176,10 @@ B_4 &\defeq f_4(X_2,X_4,X_7)
 \end{example}\pause
 
 \begin{theorem}[(Symmetric) Lovász Local Lemma]
-If for any $i$, $\law(B_i) \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\Pr{\text{all $B_i$ avoided}} > 0$.
+If for any $i$, $\law(B_i) \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\law(\text{all $B_i$ avoided}) > 0$.
 \end{theorem}\pause\spadding
 
-For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appears in $d \leq \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
+For \g{$k$-SAT}, $\law(B_i) = 2^{-k}$ \follows satisfiable if any literal appears in $d \leq \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
 \end{frame}
 
 \begin{frame}{Applications}
@@ -198,10 +199,10 @@ For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appear
 \begin{frame}{Prior Work}
 \begin{algorithm}[H]
     \TitleOfAlgo{MT-Algorithm}
-    Draw $X$ from distribution $D$\;
+    Draw $X$ from distribution $\law$\;
     \While{some bad-event is true on $X$}{
         Select any true bad-event $B$\;
-        For each $i \in \var{B}$, draw $X_i$ from its distribution in $D$\;
+        For each $i \in \var{B}$, draw $X_i$ from its distribution in $\law$\;
     }
 \end{algorithm}\pause
 \follows converges within expected polynomial time.\footfullcite{moser2010constructive}
@@ -241,7 +242,7 @@ For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appear
 
 \subsection{Alternative Characterization of MT Algorithm}
 \begin{frame}{Alternative Characterization of MT Algorithm}
-Consider the \b{resampling table} $R$ drawn according to distribution $D$:\spadding
+Consider the \b{resampling table} $R$ drawn according to distribution $\law$:\spadding
 
 \begin{columns}
 \begin{column}{.25\textwidth}
@@ -308,7 +309,7 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 
 \begin{columns}[T]
 \begin{column}{.4\textwidth}
-\centering\input{figures/witness_dag_final}\spadding
+\centering\vspace{-1em}\input{figures/witness_dag_final}\vspace{-1.5em}\spadding
 
 {\small
 \vspace{-2em}\begin{align*}
@@ -333,20 +334,20 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 
 \onslide<12->{\follows bad-events depend on \emph{disjoint} entries of $R$!}
 
-\onslide<13->{\follows configuration at step $t$ is drawn according to $D$!}
+\onslide<13->{\follows configuration at step $t$ is drawn according to $\law$!}
 \end{frame}
 
-\begin{frame}{Counting Resamples}
-\begin{block}{Witness DAG of resamples}
-\begin{center}
-\input{figures/witness_dag_subgraph}
-\end{center}
+% \begin{frame}{Counting Resamples}
+% \begin{block}{Witness DAG of resamples}
+% \begin{center}
+% \input{figures/witness_dag_subgraph}
+% \end{center}
 
-Observe: Given a resampling table $R$, $\hat{G}(B_t)$ explains the values of $\var{B_t}$ before \& after resampling $B_t$.\pause\spadding
+% Observe: Given a resampling table $R$, $\hat{G}(B_t)$ explains the values of $\var{B_t}$ before \& after resampling $B_t$.\pause\spadding
 
-\follows we have an injective mapping!
-\end{block}
-\end{frame}
+% \follows we have an injective mapping!
+% \end{block}
+% \end{frame}
 
 \begin{frame}{Counting Resamples}
 Do we map resamples to \emph{all} witness DAGs?\pause\par
@@ -358,13 +359,13 @@ No! \follows we can improve our counting!\pause\spadding
     
     \follows No! \pause$G$ \& $R$ must be \b{compatible} (set denoted $\compat{\G}{R}$)\pause\spadding
     
-    \underline{Note}: $\Pr[R \sim D]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \law(B) \pause\eqdef \w(G)$.
+    \underline{Note}: $\Pr[R \sim \law]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \law(B) \pause\eqdef \w(G)$.
 \end{itemize}\pause\spadding
 
 \follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause
 
 \vspace{-1.5em}\begin{align*}
-    \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} \pause= \sum_{G\in\G} \w(G) \eqdef \underbrace{\w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}.
+    \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} = \sum_{G\in\G} \w(G) \pause\eqdef \underbrace{\w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}.
 \end{align*}
 \end{frame}
 
@@ -391,7 +392,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \end{column}
 \begin{column}{.36\textwidth}
 \centering\input{figures/likely_unlikely_wdags}
-\flushright\small $G$, suppose $\law \equiv \nicefrac{1}{2}$.
+\flushright\small $G$, suppose $\law(B_i) = \nicefrac{1}{2}$.
 \end{column}
 \end{columns}\spadding
 
@@ -400,7 +401,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 
 \begin{frame}{Finding Resampling Table avoiding $\U$}
 Using the method of conditional expectation, we find $R$ such that \vspace{-0.5em}\begin{align*}
-    |\compat{\U}{R}| \leq \E[R \sim D]{|\compat{\U}{R}|} \pause = \w(\U).
+    |\compat{\U}{R}| \leq \E[R \sim \law]{|\compat{\U}{R}|} \pause = \w(\U).
 \end{align*}\pause
 
 \vspace{-1.8em}\follows if we choose $\tau$ such that $\w(\U) < 1$,\par then $\compat{\U}{R} = \emptyset$ and $\compat{\G}{R} \subseteq \compat{\L}{R}$.\pause\padding
@@ -427,7 +428,9 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     For $G \in \U$, by how much does $\w(G)$ change\par (depending on $\tau$) when perturbing $p$?\pause\par
     We compare $\w$ and $\epsw$\pause\ \follows $\w(\U) < \tau^\epsilon \epsw(\U)$\pause\ if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$.\pause\spadding
     
-    Need to ensure that the effect of perturbing $p$ is small enough!\pause\ \follows for $\tau^\epsilon \leq \epsw(\U)^{-1}$, we have $\w(\U) < 1$\pause\ \follows $\taumax$.\pause
+    Need to ensure that the effect of perturbing $p$ is small enough!\pause\par
+    \follows for $\tau \leq \taumax$, we have $\w(\U) < 1$.\pause
+    % \follows for $\tau^\epsilon \leq \epsw(\U)^{-1}$, we have $\w(\U) < 1$\pause\ \follows $\taumax$.\pause
     
     % For $G \in \U$, we know $\w(G) < \tau$.\pause\par
     % \underline{Note}: For $\epsilon > 0$, $\w(G) = \epsw(G)^{\nicefrac{1}{(1-\epsilon)}} \pause< \tau^\epsilon \epsw(G)$\par if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$\par (this we do from now on!).\pause\par
@@ -439,11 +442,11 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     How do we compute $\tau$?\pause\par
     Use exponential backoff!
     
-    \g{Example}\quad $\tau = \only<12-13>{2^0 = 1}\only<14>{2^{-1} = \nicefrac{1}{2}}\only<15>{2^{-2} = \nicefrac{1}{4}}\only<16->{2^{-3} = \nicefrac{1}{8}}$.\vspace{0.25em}
+    \g{Example}\quad $\tau = \only<11-12>{2^0 = 1}\only<13>{2^{-1} = \nicefrac{1}{2}}\only<14>{2^{-2} = \nicefrac{1}{4}}\only<15->{2^{-3} = \nicefrac{1}{8}}$.\vspace{0.25em}
     
-    \onslide<17->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
+    \onslide<16->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
     
-    \onslide<18->{Are $\U$ and $\L$ of polynomial size?}
+    \onslide<17->{Are $\U$ and $\L$ of polynomial size?}
     \end{column}
     \begin{column}{0.12\textwidth}
     \centering\input{figures/exp_backoff}
@@ -472,10 +475,12 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     \end{column}
     \end{columns}\pause\pause\pause\pause
     
-    We call the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$, $\epsalpha(B)$.\pause\vspace{-0.25em}\begin{align*}
-        |\U \cup \L| &\leq \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \epsalpha(B) \\
-                     &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
-    \end{align*}
+    \follows the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$ is $\nicefrac{\epsw(\G_B)}{\epslaw(B)}$.\pause\begin{align*}
+        |\U \cup \L| &\leq \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \pause\frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \frac{\epsw(\G_B)}{\epslaw(B)} \\
+                    %  &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
+    \end{align*}\vspace{-2.5em}\pause
+    
+    \r{$\epsalpha(B)$ for k-SAT}
 \end{enumerate}
 \end{frame}
 
@@ -483,13 +488,23 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
 \begin{frame}{The Algorithm}
 \begin{algorithm}[H]
 \TitleOfAlgo{Deterministic MT-Algorithm}\pause
-Select threshold $\tau$ such that $\w(\U) < 1$ and $|\U \cup \L| \leq \epsW^{\O{\nicefrac{1}{\epsilon}}}$\;\pause
-Generate the witness DAGs $\U$\;\pause
-Find resampling table $R$ avoiding $\U$\;\pause
+Using exponential backoff, select $\tau$ such that $\w(\U) < 1$\;\pause
+% Generate the witness DAGs $\U$\;\pause
+Using method of conditional expectations, find resampling table $R$ avoiding $\U$\;\pause
 Run the deterministic MT algorithm on $R$\;
 \end{algorithm}\pause\spadding
 
 We have seen that the final step takes at most $|\compat{\G}{R}| \leq |\compat{\L}{R}|$ iterations!
+\end{frame}
+
+\subsection{Limitations}
+\begin{frame}{Limitations}
+This algorithm does not cover some scenarios:
+\begin{itemize}
+    \item superpolynomial $|\B|$ and $|\Sigma|$\pause
+    \item non-variable probability spaces\pause
+    \item the Shearer criterion does not cover lopsidependency
+\end{itemize}
 \end{frame}
 
 % \subsection{Counting Resamples with Witness DAGs}
