@@ -89,6 +89,7 @@
 \def\spadding{\vspace{0.25cm}}
 \def\b{\textcolor{blue}}
 \def\r{\textcolor{red}}
+\def\o{\textcolor{orange}}
 \def\g#1{{\usebeamercolor[fg]{block title example}{#1}}}
 \definecolor{softgreen}{RGB}{124,216,23}
 
@@ -112,6 +113,7 @@
 \RenewDocumentCommand{\O}{m}{\mathcal{O}(#1)}
 \NewDocumentCommand{\B}{}{\mathcal{B}}
 \NewDocumentCommand{\G}{}{\mathcal{G}}
+\NewDocumentCommand{\C}{}{\o{\mathcal{C}}}
 \RenewDocumentCommand{\L}{}{\r{\ensuremath{\mathcal{L}_\tau}}}
 \NewDocumentCommand{\U}{}{\b{\ensuremath{\mathcal{U}_\tau}}}
 \NewDocumentCommand{\pmax}{}{p_\mathrm{max}}
@@ -385,19 +387,23 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \g{Example}\quad $\w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
 
 \onslide<6->{For a threshold $\tau \in [0,1]$, \begin{itemize} % TODO: L & U are subsets of collectible witness DAGs
-    \item let $\L \subseteq \G$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
-    \item let $\U \subseteq \G$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all strict prefixes are likely.}
+    \item let $\L \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
+    \item let $\U \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all strict prefixes are likely.}
 \end{itemize}}
 
-\onslide<8->{\underline{Note}: Fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\G}{R} \subseteq \compat{\L}{R}$.}
+\onslide<8->{\underline{Problem}: $\U$ does not form a complete boundary of $\L$!}
 \end{column}
 \begin{column}{.36\textwidth}
 \centering\input{figures/likely_unlikely_wdags}
 \flushright\small $G$, suppose $\law \equiv \nicefrac{1}{2}$.
 \end{column}
-\end{columns}\spadding
+\end{columns}\vspace{0.25em}\pause\pause\pause\pause\pause\pause\pause
 
-\onslide<9->{\follows need to trade $\tau$!}
+Consider the larger set $\C$ of all Witness DAGs attainable by removing the sink of some single-sink Witness DAG\pause\ \follows $\G \subseteq \C$.\pause\spadding
+
+\follows fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\C}{R} \subseteq \compat{\L}{R}$.
+
+% \onslide<9->{\follows need to trade $\tau$!}
 \end{frame}
 
 \begin{frame}{Finding Resampling Table avoiding $\U$}
@@ -467,7 +473,7 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     \begin{column}{0.42\textwidth}
     \underline{Observe}: Removing the sink $B$ from $G \in \U \cup \L$,\par we have $\epsw(G - B) \geq \tau$.\spadding
     
-    \onslide<5->{But $G - B$ is not necessarily single-sink! Its \textcolor{orange}{sinks} are an independent set adjacent to $B$ in $G$.}
+    \onslide<5->{But $G - B$ is not necessarily single-sink! Its \o{sinks} are an independent set adjacent to $B$ in $G$.}
     \end{column}
     \begin{column}{0.1\textwidth}
     \centering\vspace{-2em}\input{figures/likely_unlikely_wdags_removing_sink}
