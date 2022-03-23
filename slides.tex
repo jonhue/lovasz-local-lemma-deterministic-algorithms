@@ -42,6 +42,7 @@
 % \usepgfplotslibrary{fillbetween}
 % \usepgfplotslibrary{dateplot}
 % \usepackage{pgfplotstable}
+\usepackage{appendixnumberbeamer}
 
 % \usepackage{booktabs}
 % \usepackage[final]{microtype}
@@ -399,11 +400,9 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \end{column}
 \end{columns}\vspace{0.25em}\pause\pause\pause\pause\pause\pause\pause
 
-Consider the larger set $\C$ of all Witness DAGs attainable by removing the sink of some single-sink Witness DAG\pause\ \follows $\G \subseteq \C$.\pause\spadding
+Consider the larger set $\C$ of all witness DAGs attainable by removing the sink of some single-sink witness DAG\pause\ \follows $\G \subseteq \C$.\pause\spadding
 
 \follows fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\C}{R} \subseteq \compat{\L}{R}$.
-
-% \onslide<9->{\follows need to trade $\tau$!}
 \end{frame}
 
 \begin{frame}{Finding Resampling Table avoiding $\U$}
@@ -413,14 +412,9 @@ Using the method of conditional expectation, we find $R$ such that \vspace{-0.5e
 
 \vspace{-1.8em}\follows if we choose $\tau$ such that $\w(\U) < 1$,\par then $\compat{\U}{R} = \emptyset$ and $\compat{\G}{R} \subseteq \compat{\L}{R}$.\pause\padding
 
-But can $R$ be computed efficiently?\pause\spadding
+What is the effect of changing $\tau$?\pause\vspace{0.1em}
 
-\underline{Observe}: The MT algorithm uses at most as many columns as the size of the largest witness DAG in $\L$\pause, which is at most $|\L|$.\pause\spadding
-
-For each cell of $R$, choose one of $|\Sigma|$ values to minimize the conditional probability of $G$ \& $R$ being compatible for each $G \in \U$.\pause\spadding
-
-\follows $\O{n |\L| \cdot |\Sigma| \cdot |\L| T \cdot |\U|}$\pause, where $T$ is the runtime of computing conditional probabilities of bad-events given a partial resampling table.\pause\par
-Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
+\centering\input{figures/threshold}
 \end{frame}
 
 \begin{frame}{Choosing the Threshold}
@@ -449,11 +443,11 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     How do we compute $\tau$?\pause\par
     Use exponential backoff!
     
-    \g{Example}\quad $\tau = \only<11-12>{2^0 = 1}\only<13>{2^{-1} = \nicefrac{1}{2}}\only<14>{2^{-2} = \nicefrac{1}{4}}\only<15->{2^{-3} = \nicefrac{1}{8}}$.\vspace{0.25em}
+    \g{Example}\quad $\tau = \only<11-12>{2^0 = 1}\only<13>{2^{-1} = \nicefrac{1}{2}}\only<14>{2^{-2} = \nicefrac{1}{4}}\only<15->{2^{-3} = \nicefrac{1}{8}}$.\spadding%\vspace{0.25em}
     
-    \onslide<16->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
+    % \onslide<16->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
     
-    \onslide<17->{Are $\U$ and $\L$ of polynomial size?}
+    \onslide<16->{Are $\U$ and $\L$ of polynomial size?}
     \end{column}
     \begin{column}{0.12\textwidth}
     \centering\input{figures/exp_backoff}
@@ -483,16 +477,18 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     \end{columns}\pause\pause\pause\pause
     
     \follows the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$ is $\nicefrac{\epsw(\G_B)}{\epslaw(B)}$.\pause\begin{align*}
-        |\U \cup \L| &\leq \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \pause\frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \frac{\epsw(\G_B)}{\epslaw(B)} \\
+        \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \only<7>{1}\pause\frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \frac{\epsw(\G_B)}{\epslaw(B)}
                     %  &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
-    \end{align*}\vspace{-2.5em}\pause
+    \end{align*}\vspace{-0.5em}\pause
     
-    \r{$\epsalpha(B)$ for k-SAT}
+    Bounding multi-sink witness DAGs is straightforward and yields similar bound!
 \end{enumerate}
 \end{frame}
 
 \subsection{The Algorithm}
 \begin{frame}{The Algorithm}
+\r{$\epsalpha(B)$ for k-SAT}\pause
+
 \begin{algorithm}[H]
 \TitleOfAlgo{Deterministic MT-Algorithm}\pause
 Using exponential backoff, select ``large'' $\tau$ such that $\w(\U) < 1$\;\pause
@@ -561,6 +557,19 @@ This algorithm does not cover some scenarios:
     \centering \large
     Thanks for your attention!
     Questions?
+\end{frame}
+
+\appendix
+
+\begin{frame}{Computing the Resampling Table}
+Can $R$ be computed efficiently?\pause\spadding
+
+\underline{Observe}: The MT algorithm uses at most as many columns as the size of the largest witness DAG in $\L$\pause, which is at most $|\L|$.\pause\spadding
+
+For each cell of $R$, choose one of $|\Sigma|$ values to minimize the conditional probability of $G$ \& $R$ being compatible for each $G \in \U$.\pause\spadding
+
+\follows $\O{n |\L| \cdot |\Sigma| \cdot |\L| T \cdot |\U|}$\pause, where $T$ is the runtime of computing conditional probabilities of bad-events given a partial resampling table.\pause\par
+Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
 \end{frame}
 
 \end{document}
