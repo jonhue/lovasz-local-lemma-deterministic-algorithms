@@ -120,6 +120,7 @@
 \NewDocumentCommand{\maxsize}{m}{\mathrm{maxsize}(#1)}
 \NewDocumentCommand{\poly}{m}{\mathrm{poly}(#1)}
 \NewDocumentCommand{\polylog}{m}{\mathrm{polylog}(#1)}
+\NewDocumentCommand{\distr}{}{D}
 \NewDocumentCommand{\law}{}{p}
 \NewDocumentCommand{\epslaw}{}{\ensuremath{\law^{1-\epsilon}}}
 \NewDocumentCommand{\w}{}{\ensuremath{w_\law}}
@@ -156,8 +157,8 @@
 \section{Introduction}
 \subsection{Lovász Local Lemma and the MT Algorithm}
 \begin{frame}{Setting}
-Independent $\Sigma$-valued coordinates $X_1, \dots, X_n$ with law $\law$.
-``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$.
+Distribution $\distr$ over independent $\Sigma$-valued coordinates $X_1, \dots, X_n$.
+``Bad-events'' $\B = \{B_1, \dots, B_m\}$, each a boolean function of some subset of coordinates $\var{B_i} \subseteq \{X_1,\dots,X_n\}$ with law $\law$.
 
 \begin{example}[3-SAT]
 \begin{columns}
@@ -176,10 +177,10 @@ B_4 &\defeq f_4(X_2,X_4,X_7)
 \end{example}\pause
 
 \begin{theorem}[(Symmetric) Lovász Local Lemma]
-If for any $i$, $\law(B_i) \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\law(\text{all $B_i$ avoided}) > 0$.
+If for any $i$, $\law(B_i) \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\Pr{\text{all $B_i$ avoided}} > 0$.
 \end{theorem}\pause\spadding
 
-For \g{$k$-SAT}, $\law(B_i) = 2^{-k}$ \follows satisfiable if any literal appears in $d \leq \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
+For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appears in $d \leq \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
 \end{frame}
 
 \begin{frame}{Applications}
@@ -199,10 +200,10 @@ For \g{$k$-SAT}, $\law(B_i) = 2^{-k}$ \follows satisfiable if any literal appear
 \begin{frame}{Prior Work}
 \begin{algorithm}[H]
     \TitleOfAlgo{MT-Algorithm}
-    Draw $X$ from distribution $\law$\;
+    Draw $X$ from distribution $\distr$\;
     \While{some bad-event is true on $X$}{
         Select any true bad-event $B$\;
-        For each $i \in \var{B}$, draw $X_i$ from its distribution in $\law$\;
+        For each $i \in \var{B}$, draw $X_i$ from its distribution in $\distr$\;
     }
 \end{algorithm}\pause
 \follows converges within expected polynomial time.\footfullcite{moser2010constructive}
@@ -242,7 +243,7 @@ For \g{$k$-SAT}, $\law(B_i) = 2^{-k}$ \follows satisfiable if any literal appear
 
 \subsection{Alternative Characterization of MT Algorithm}
 \begin{frame}{Alternative Characterization of MT Algorithm}
-Consider the \b{resampling table} $R$ drawn according to distribution $\law$:\spadding
+Consider the \b{resampling table} $R$ drawn according to distribution $\distr$:\spadding
 
 \begin{columns}
 \begin{column}{.25\textwidth}
@@ -334,7 +335,7 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 
 \onslide<12->{\follows bad-events depend on \emph{disjoint} entries of $R$!}
 
-\onslide<13->{\follows configuration at step $t$ is drawn according to $\law$!}
+\onslide<13->{\follows configuration at step $t$ is drawn according to $\distr$!}
 \end{frame}
 
 % \begin{frame}{Counting Resamples}
@@ -359,7 +360,7 @@ No! \follows we can improve our counting!\pause\spadding
     
     \follows No! \pause$G$ \& $R$ must be \b{compatible} (set denoted $\compat{\G}{R}$)\pause\spadding
     
-    \underline{Note}: $\Pr[R \sim \law]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \law(B) \pause\eqdef \w(G)$.
+    \underline{Note}: $\Pr[R \sim \distr]{\text{$G$ \& $R$ compatible}} \pause= \prod_{B \in G} \law(B) \pause\eqdef \w(G)$.
 \end{itemize}\pause\spadding
 
 \follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause
@@ -392,7 +393,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \end{column}
 \begin{column}{.36\textwidth}
 \centering\input{figures/likely_unlikely_wdags}
-\flushright\small $G$, suppose $\law(B_i) = \nicefrac{1}{2}$.
+\flushright\small $G$, suppose $\law \equiv \nicefrac{1}{2}$.
 \end{column}
 \end{columns}\spadding
 
@@ -401,7 +402,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 
 \begin{frame}{Finding Resampling Table avoiding $\U$}
 Using the method of conditional expectation, we find $R$ such that \vspace{-0.5em}\begin{align*}
-    |\compat{\U}{R}| \leq \E[R \sim \law]{|\compat{\U}{R}|} \pause = \w(\U).
+    |\compat{\U}{R}| \leq \E[R \sim \distr]{|\compat{\U}{R}|} \pause = \w(\U).
 \end{align*}\pause
 
 \vspace{-1.8em}\follows if we choose $\tau$ such that $\w(\U) < 1$,\par then $\compat{\U}{R} = \emptyset$ and $\compat{\G}{R} \subseteq \compat{\L}{R}$.\pause\padding
