@@ -394,7 +394,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \begin{column}{.55\textwidth}
 \g{Example}\quad $\w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
 
-\onslide<6->{For a threshold $\tau \in [0,1]$, \begin{itemize} % TODO: L & U are subsets of collectible witness DAGs
+\onslide<6->{For a threshold $\tau \in [0,1]$, \begin{itemize}
     \item let $\L \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
     \item let $\U \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all strict prefixes are likely.}
 \end{itemize}}
@@ -428,16 +428,21 @@ What is the effect of changing $\tau$?\pause\vspace{0.1em}
 Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial size?\pause
 
 \begin{enumerate}
-    \item What is the largest $\tau$ guaranteeing $\w(\U) < 1$?\pause
-
-    % wiggle proportional to weight of object (if weight of object depends on \tau, wiggle depends on \tau)    
-    \input{figures/wiggle}\pause\vspace{-1em}
+    \item What is the largest $\tau$ guaranteeing $\w(\U) < 1$?\pause\spadding
     
-    For $G \in \U$, by how much does $\w(G)$ change\par (depending on $\tau$) when perturbing $p$?\pause\par
-    We compare $\w$ and $\epsw$\pause\ \follows $\w(\U) < \tau^\epsilon \epsw(\U)$\pause\ if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$.\pause\spadding
-    
-    Need to ensure that the effect of perturbing $p$ is small enough!\pause\par
+    We compare $\w$ and $\epsw$.\pause\par
+    For $G \in \U$, suppose $\epsw(G) < \tau$.\pause\par
+    Then, $\w(G) < \tau^\epsilon \epsw(G)$\pause\ \follows $\w(\U) < \tau^\epsilon \epsw(\U)$.\pause\par
     \follows for $\tau \leq \taumax$, we have $\w(\U) < 1$.\pause
+
+    % % wiggle proportional to weight of object (if weight of object depends on \tau, wiggle depends on \tau)    
+    % \input{figures/wiggle}\pause\vspace{-1em}
+    
+    % For $G \in \U$, by how much does $\w(G)$ change\par (depending on $\tau$) when perturbing $p$?\pause\par
+    % We compare $\w$ and $\epsw$\pause\ \follows $\w(\U) < \tau^\epsilon \epsw(\U)$\pause\ if we choose $\U$ and $\L$ based on $\epsw$ rather than $\w$.\pause\spadding
+    
+    % Need to ensure that the effect of perturbing $p$ is small enough!\pause\par
+    % \follows for $\tau \leq \taumax$, we have $\w(\U) < 1$.\pause
     % \follows for $\tau^\epsilon \leq \epsw(\U)^{-1}$, we have $\w(\U) < 1$\pause\ \follows $\taumax$.\pause
     
     % For $G \in \U$, we know $\w(G) < \tau$.\pause\par
@@ -450,11 +455,11 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     How do we compute $\tau$?\pause\par
     Use exponential backoff!
     
-    \g{Example}\quad $\tau = \only<11-12>{2^0 = 1}\only<13>{2^{-1} = \nicefrac{1}{2}}\only<14>{2^{-2} = \nicefrac{1}{4}}\only<15->{2^{-3} = \nicefrac{1}{8}}$.\spadding%\vspace{0.25em}
+    \g{Example}\quad $\tau = \only<9>{2^0 = 1}\only<10>{2^{-1} = \nicefrac{1}{2}}\only<11>{2^{-2} = \nicefrac{1}{4}}\only<12->{2^{-3} = \nicefrac{1}{8}}$.\spadding%\vspace{0.25em}
     
-    % \onslide<16->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
+    % \onslide<13->{\follows $\tau \geq \frac{1}{2} \taumax$}\spadding
     
-    \onslide<16->{Are $\U$ and $\L$ of polynomial size?}
+    \onslide<13->{Are $\U$ and $\L$ of polynomial size?}
     \end{column}
     \begin{column}{0.12\textwidth}
     \centering\input{figures/exp_backoff}
@@ -470,31 +475,35 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
     \setcounter{enumi}{1}
     \item Is $\U \cup \L$ of polynomial size?\pause\vspace{0.25em}
     
-    \begin{columns}[T]
+    Bounding \# of multi-sink witness DAGs is easy!\pause\par
+    What about the \# of single-sink witness DAGs?\pause
+    
+    \vspace{0.25em}\begin{columns}[T]
     \begin{column}{0.42\textwidth}
     \underline{Observe}: Removing the sink $B$ from $G \in \U \cup \L$,\par we have $\epsw(G - B) \geq \tau$.\spadding
     
     \onslide<5->{But $G - B$ is not necessarily single-sink! Its \o{sinks} are an independent set adjacent to $B$ in $G$.}
     \end{column}
     \begin{column}{0.1\textwidth}
-    \centering\vspace{-2em}\input{figures/likely_unlikely_wdags_removing_sink}
+    \centering\vspace{-1.5em}\input{figures/likely_unlikely_wdags_removing_sink}
     \end{column}
-    \begin{column}{0\textwidth}
-    \end{column}
+    % \begin{column}{0\textwidth}
+    % \end{column}
     \end{columns}\pause\pause\pause\pause
     
-    \follows the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$ is $\nicefrac{\epsw(\G_B)}{\epslaw(B)}$.\pause\begin{align*}
-        \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \only<7>{1}\pause\frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \frac{\epsw(\G_B)}{\epslaw(B)}
-                    %  &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
-    \end{align*}\vspace{-0.5em}\pause
+    \follows the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$ is $\nicefrac{\epsw(\G_B)}{\epslaw(B)}$.\pause\par
+    \follows $|\U \cup \L|$ is polynomial if $\epsw(\G_B)$ is polynomial!
     
-    Bounding multi-sink witness DAGs is straightforward and yields similar bound!
+    % \begin{align*}
+    %     \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \only<7>{1}\pause\frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \frac{\epsw(\G_B)}{\epslaw(B)}
+    %                 %  &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
+    % \end{align*}
 \end{enumerate}
 \end{frame}
 
 \subsection{The Algorithm}
 \begin{frame}{The Algorithm}
-\r{$\epsalpha(B)$ for k-SAT}\pause
+% \r{TODO: $\epsalpha(B)$ for k-SAT}\pause
 
 \begin{algorithm}[H]
 \TitleOfAlgo{Deterministic MT-Algorithm}\pause
@@ -513,7 +522,7 @@ This algorithm does not cover some scenarios:
 \begin{itemize}
     \item superpolynomial $|\B|$ and $|\Sigma|$\pause
     \item non-variable probability spaces\pause
-    \item the Shearer criterion does not cover lopsidependency
+    \item does not cover lopsidependency
 \end{itemize}
 \end{frame}
 
