@@ -183,15 +183,16 @@ B_4 &\defeq f_4(X_2,X_4,X_7)
 If for any $i$, $\law(B_i) \leq \pmax$ and $B_i$ affects at most $d$ bad-events, then $e \pmax d \leq 1$ implies $\Pr{\text{all $B_i$ avoided}} > 0$.
 \end{theorem}\pause\spadding
 
-For \g{$k$-SAT}, $\law \equiv 2^{-k}$ \follows satisfiable if any literal appears in $d \leq \nicefrac{2^k}{e}$ clauses!\pause\ How to find a satisfying assignment?
+For \g{$k$-SAT} and $X_i \sim \text{Unif}(\{0,1\})$, $\law \equiv 2^{-k}$.\par
+\follows satisfiable only if any variable appears in at most $\nicefrac{2^k}{e}$ clauses!%\pause\ How to find a satisfying assignment?
 \end{frame}
 
 \begin{frame}{Applications}
 \begin{example}[k-Coloring]
-Choose $c(v) \sim \text{Unif}([k])$ independently.\pause\par
-$B_{i,v} \defeq c(v) = i$ and $v$ has neighbor with color $i$.\par
-$B_{i,v}$ affects $B_{i',v'}$ iff $v$ and $v'$ have distance $\leq 2$\pause\ \follows $d \leq k \Delta^2$.\pause\par
-$p(B_{i,v}) = \frac{1}{k}(\sum_{u \in N(v)} \frac{1}{k}) \leq \frac{\Delta}{k^2}$\pause\ \follows if $e \Delta^3 \leq k$, has $k$-coloring!
+Choose $C_v \sim \text{Unif}([k])$ independently.\pause\par
+$B_{v,c} \defeq \text{``$C_v = c$ and $v$ has neighbor with color $c$''}$.\par
+$B_{v,c}$ affects $B_{v',c'}$ iff $v$ and $v'$ have distance $\leq 2$\pause\ \follows $d \leq k \Delta^2$.\pause\par
+$p(B_{v,c}) = \frac{1}{k}(\sum_{u \in N(v)} \frac{1}{k}) \leq \frac{\Delta}{k^2}$\pause\ \follows if $e \Delta^3 \leq k$, has $k$-coloring!
 \end{example}\pause\padding
 
 More applications:
@@ -242,7 +243,8 @@ More applications:
 \begin{enumerate}
     \item \emph{Deterministic algorithm} with a simpler \& more general condition that is satisfied by \emph{most} variants of the LLL.\pause
     \item Faster \emph{parallel algorithm} with simpler conditions.\pause
-    \item Algorithm that finds a configuration avoiding bad events such that the (weighted) probability of some auxiliary events is not much more than their expectation.
+    \item We can ensure that the final distribution of the deterministic algorithm is not ``far off'' from the distribution at the end of the MT algorithm.
+    % \item Algorithm that finds a configuration avoiding bad events such that the (weighted) probability of some auxiliary events is not much more than their expectation.
 \end{enumerate}
 \end{frame}
 
@@ -289,7 +291,8 @@ When resampling $B_i$, shift rows $\var{B_i}$ to left.\pause\padding
 
 \subsection{Counting Resamples}
 \begin{frame}{Counting Resamples}
-Find an injective mapping from resamples to some ``countable'' structure.\pause
+% Find an injective mapping from resamples to some ``countable'' structure.\pause
+Want to find an encoding of resamples such that we do not lose much information.\pause
 
 \begin{block}{Why may executions be long?}
 Given a resampling table $R$, a \b{(partial) execution} of the MT algorithm is described by the sequence of resampled bad-events.\pause\spadding
@@ -311,12 +314,12 @@ $B_i \longrightarrow B_j$ iff $i < j$\par and $B_i$ affects $B_j$
 \end{column}
 \end{columns}\pause\pause
 
-\follows $\hat{G}$ is always a DAG!\pause\ But why use DAGs?
+\follows $\hat{G}$ is always a DAG!\pause\ But why are DAGs a good encoding?
 \end{block}
 \end{frame}
 
 \begin{frame}{Counting Resamples}
-We can reconstruct the final configuration of the MT algorithm!\spadding
+Witness DAGs encode the final configuration of the MT algorithm!\spadding
 
 \begin{columns}[T]
 \begin{column}{.4\textwidth}
@@ -343,7 +346,7 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 
 \onslide<11->{\follows may encode multiple executions, but \emph{all} lead to the same final configuration!}
 
-\onslide<12->{\follows bad-events depend on \emph{disjoint} entries of $R$!}
+\onslide<12->{\follows resampled bad-events depend on \emph{disjoint} entries of $R$!}
 
 \onslide<13->{\follows configuration at step $t$ is drawn according to $\distr$!}
 \end{frame}
@@ -360,13 +363,14 @@ We can reconstruct the final configuration of the MT algorithm!\spadding
 % \end{block}
 % \end{frame}
 
-\begin{frame}{Counting Resamples}
-Do we map resamples to \emph{all} witness DAGs?\pause\par
+\subsection{Analyzing the MT Algorithm}
+\begin{frame}{Analyzing the MT Algorithm}
+Are \emph{all} witness DAGs used as an encoding of a resample?\pause\par
 No! \follows we can improve our counting!\pause\spadding
 
 \begin{itemize}
     \item $\hat{G}(B_i)$ always has a single sink (set denoted $\G$)\pause
-    \item Given resampling table $R$, do all single-sink witness DAGs $G$ correspond to a possible resample?\pause
+    \item If we fix a resampling table $R$, do we need to consider all single-sink witness DAGs $G$?\pause
     
     \follows No! \pause$G$ \& $R$ must be \b{compatible} (set denoted $\compat{\G}{R}$)\pause\spadding
     
@@ -376,7 +380,7 @@ No! \follows we can improve our counting!\pause\spadding
 \follows for fixed resampling table $R$, at most $|\compat{\G}{R}|$ resamplings\pause
 
 \vspace{-1.5em}\begin{align*}
-    \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} = \sum_{G\in\G} \w(G) \pause\eqdef \underbrace{\w(\G) \pause < \infty}_{\text{\b{Shearer Criterion}}}.
+    \E{|\compat{\G}{R}|} \pause= \sum_{G \in \G} \Pr{\text{$G$ \& $R$ compatible}} = \sum_{G\in\G} \w(G) \pause\eqdef \underbrace{\w(\G) \pause < \infty.}_{\text{\b{Shearer Criterion}}}
 \end{align*}
 \end{frame}
 
