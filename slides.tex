@@ -407,7 +407,7 @@ Idea: choose $R$ such that unlikely resamples are avoided!
 \end{column}
 \end{columns}\vspace{0.25em}\pause\pause\pause\pause\pause\pause\pause
 
-Consider the larger set $\C$ of all witness DAGs attainable by removing the sink of some single-sink witness DAG\pause\ \follows $\G \subseteq \C$.\pause\spadding
+Consider the larger set $\C$ of all witness DAGs attainable by removing the sink of some single-sink witness DAG \follows $\G \subseteq \C$.\pause\spadding
 
 \follows fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\C}{R} \subseteq \compat{\L}{R}$.
 \end{frame}
@@ -507,11 +507,11 @@ Can we choose $\tau$ such that $\w(\U) < 1$ and $\U$ and $\L$ are of polynomial 
 
 \begin{algorithm}[H]
 \TitleOfAlgo{Deterministic MT-Algorithm}\pause
-Using exponential backoff, select ``large'' $\tau$ such that $\w(\U) < 1$\;\pause
-% Generate the witness DAGs $\U$\;\pause
-Using method of conditional expectations, find resampling table $R$ avoiding $\U$\;\pause
+Using exponential backoff, select ``large'' $\tau$ such that $\w(\U) < 1$\;
+% Generate the witness DAGs $\U$\;
+Using method of conditional expectations, find resampling table $R$ avoiding $\U$\;
 Run the deterministic MT algorithm on $R$\;
-\end{algorithm}\pause\spadding
+\end{algorithm}\spadding
 
 We have seen that the final step takes at most $|\compat{\G}{R}| \leq |\compat{\L}{R}|$ iterations!
 \end{frame}
@@ -520,8 +520,8 @@ We have seen that the final step takes at most $|\compat{\G}{R}| \leq |\compat{\
 \begin{frame}{Limitations}
 This algorithm does not cover some scenarios:
 \begin{itemize}
-    \item superpolynomial $|\B|$ and $|\Sigma|$
-    \item non-variable probability spaces
+    \item superpolynomial $|\B|$ and $|\Sigma|$\pause
+    \item non-variable probability spaces\pause
     \item does not cover lopsidependency
 \end{itemize}
 \end{frame}
