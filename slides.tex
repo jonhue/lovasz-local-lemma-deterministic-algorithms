@@ -133,9 +133,9 @@
 \NewDocumentCommand{\compat}{mm}{#1[#2]}
 
 \newcommand<>{\uncoverubrace}[2]{%
-  \onslide#3 \underbrace{ \onslide<1->%
+  \onslide#3 \underbrace{ \onslide<4->%
   #1%
-  \onslide#3 }_{#2} \onslide<1->%
+  \onslide#3 }_{#2} \onslide<4->%
 }
 
 \usepackage[sorting=ynt,style=alphabetic]{biblatex}
@@ -398,27 +398,54 @@ No! \follows we can improve our counting!\pause\spadding
 \subsection{Likely \& Unlikely Resamples}
 \begin{frame}{Likely \& Unlikely Resamples}
 Want to find resampling table $R$ such that $|\compat{\G}{R}|$ is polynomial.\pause\par
-But, $|\compat{\G}{R}| = \infty$.
-Idea: choose $R$ such that unlikely resamples are avoided!
+But, $|\compat{\G}{R}| = \infty$!\pause
 
 \begin{columns}[T]
-\begin{column}{.55\textwidth}
-\g{Example}\quad $\w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
+\begin{column}{.4\textwidth}
+\g{Example}\quad $\w(G) = \only<3>{\nicefrac{1}{2}}\only<4>{\nicefrac{1}{4}}\only<5->{\nicefrac{1}{8}}$.
+\end{column}
+\begin{column}{.5\textwidth}
+\input{figures/extending_wdag}\par
+% \small $G$, suppose $\law \equiv \nicefrac{1}{2}$.
+\end{column}
+\end{columns}\pause\pause\pause
 
-\onslide<6->{For a threshold $\tau \in [0,1]$, \begin{itemize}
-    \item let $\L \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
-    \item let $\U \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all strict prefixes are likely.}
+\only<6-8>{\centering\input{figures/likely_unlikely_closeup}}\pause\pause\pause
+
+\vspace{0.4em}\begin{columns}[T]
+\begin{column}{.5\textwidth}
+\onslide<9->{For a threshold $\tau \in [0,1]$, \begin{itemize}
+    \item let $\L \subseteq \only<-10>{\G}\only<11->{\C}$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<10->{;
+    \item let $\U \subseteq \only<-10>{\G}\only<11->{\C}$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all strict prefixes are likely.}
 \end{itemize}}
-
-\onslide<8->{\underline{Problem}: $\U$ does not form a complete boundary of $\L$!}
 \end{column}
-\begin{column}{.36\textwidth}
-\centering\input{figures/likely_unlikely_wdags}
-\flushright\small $G$, suppose $\law \equiv \nicefrac{1}{2}$.
+\begin{column}{.4\textwidth}
+\onslide<9->{\vspace{-0.75em}\centering\input{figures/likely_unlikely}}
 \end{column}
-\end{columns}\vspace{0.25em}\pause\pause\pause\pause\pause\pause\pause
+\end{columns}\pause\pause\pause
 
-Consider the larger set $\C$ of all witness DAGs attainable by removing the sink of some single-sink witness DAG \follows $\G \subseteq \C$.\pause\spadding
+% Idea: choose $R$ such that unlikely resamples are avoided!
+
+% \begin{columns}[T]
+% \begin{column}{.55\textwidth}
+% \g{Example}\quad $\w(G) = \only<2-3>{\nicefrac{1}{4}}\only<4>{\nicefrac{1}{16}}\only<5->{\nicefrac{1}{32}}$.\vspace{0.3em}
+
+% \onslide<6->{For a threshold $\tau \in [0,1]$, \begin{itemize}
+%     \item let $\L \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{likely} witness DAGs, $\w(G) \geq \tau$\only<7->{;
+%     \item let $\U \subseteq \only<-8>{\G}\only<9->{\C}$ be the set of \b{(most likely) unlikely} witness DAGs, $\w(G) < \tau$ such that all strict prefixes are likely.}
+% \end{itemize}}
+
+% \onslide<8->{\underline{Problem}: $\U$ does not form a complete boundary of $\L$!}
+% \end{column}
+% \begin{column}{.36\textwidth}
+% \centering\input{figures/likely_unlikely_wdags}
+% \flushright\small $G$, suppose $\law \equiv \nicefrac{1}{2}$.
+% \end{column}
+% \end{columns}\vspace{0.25em}\pause\pause\pause\pause\pause\pause\pause
+
+% Consider the larger set $\C$ of all witness DAGs attainable by removing the sink of some single-sink witness DAG \follows $\G \subseteq \C$.\pause\spadding
+
+Need to consider all witness DAGs attainable by removing the sink of some single-sink witness DAG (set denoted $\C$).\pause
 
 \follows fixing resampling table $R$, if $\compat{\U}{R} = \emptyset$, then $\compat{\C}{R} \subseteq \compat{\L}{R}$.
 \end{frame}
@@ -481,35 +508,36 @@ Use exponential backoff!
 \end{columns}
 \end{frame}
 
-\begin{frame}{Choosing the Threshold}
-\begin{enumerate}
-    \setcounter{enumi}{1}
-    \item Is $\U \cup \L$ of polynomial size?\pause\vspace{0.25em}
-    
-    Bounding \# of multi-sink witness DAGs is easy!\pause\par
-    What about the \# of single-sink witness DAGs?\pause
-    
-    \vspace{0.25em}\begin{columns}[T]
-    \begin{column}{0.42\textwidth}
-    \underline{Observe}: Removing the sink $B$ from $G \in \U \cup \L$,\par we have $\epsw(G - B) \geq \tau$.\spadding
-    
-    \onslide<5->{But $G - B$ is not necessarily single-sink! Its \o{sinks} are an independent set adjacent to $B$ in $G$.}
-    \end{column}
-    \begin{column}{0.1\textwidth}
-    \centering\vspace{-1.5em}\input{figures/likely_unlikely_wdags_removing_sink}
-    \end{column}
-    \begin{column}{0\textwidth}
-    \end{column}
-    \end{columns}\pause\pause
-    
-    \follows the cumulative weight of all witness DAGs attained by deleting sink $B$ of $G \in \G$\pause\ is $\nicefrac{\epsw(\G_B)}{\epslaw(B)}$.\pause\par
-    \follows $|\U \cup \L|$ is polynomial if $\nicefrac{\epsw(\G_B)}{\epslaw(B)}$ is polynomial!
-    
-    % \begin{align*}
-    %     \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \only<7>{1}\pause\frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \frac{\epsw(\G_B)}{\epslaw(B)}
-    %                 %  &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
-    % \end{align*}
-\end{enumerate}
+\begin{frame}{Is $\U \cup \L$ of polynomial size?}
+Need to bound \# of multi-sink witness DAGs\par
+and \only<1>{\# of single-sink witness DAGs}\only<2->{\underline{\# of single-sink witness DAGs}}.\pause\pause
+
+\vspace{0.5em}\begin{center}
+    \input{figures/single_sink_poly_size}
+\end{center}\pause\pause
+
+\follows $\frac{\epsw(G)}{\tau \epslaw(B)} \geq 1$.\pause\par
+\follows $|\U \cup \L| \leq \sum_{B \in \B} \frac{\epsw(\G_B)}{\tau \epslaw(B)}$\pause\padding
+
+% \vspace{0.25em}\begin{columns}[T]
+% \begin{column}{0.42\textwidth}
+% \underline{Observe}: Removing the sink $B$ from $G \in \U \cup \L$,\par we have $\epsw(G - B) \geq \tau$.\spadding
+
+% \onslide<5->{But $G - B$ is not necessarily single-sink! Its \o{sinks} are an independent set adjacent to $B$ in $G$.}
+% \end{column}
+% \begin{column}{0.1\textwidth}
+% \centering\vspace{-1.5em}\input{figures/likely_unlikely_wdags_removing_sink}
+% \end{column}
+% \begin{column}{0\textwidth}
+% \end{column}
+% \end{columns}\pause\pause
+
+$\nicefrac{\epsw(\G_B)}{\epslaw(B)}$ is polynomial under common LLL conditions!
+
+% \begin{align*}
+%     \sum_{B \in \B} \sum_{\substack{G \in \U \cup \L \\ \text{with sink $B$}}} \only<7>{1}\pause\frac{\epsw(G - B)}{\tau} \pause\leq \frac{1}{\tau} \sum_{B \in \B} \frac{\epsw(\G_B)}{\epslaw(B)}
+%                 %  &\pause\eqdef \frac{\epsW}{\tau} \pause\leq \frac{2 \epsW}{\taumax} = 2 \epsW \epsw(\U)^{\nicefrac{1}{\epsilon}} \pause\leq 2 \epsW^{1+\nicefrac{1}{\epsilon}}.% \text{ as $\epsw(\U) \leq \epsW$}.
+% \end{align*}
 \end{frame}
 
 \subsection{The Algorithm}
@@ -597,6 +625,23 @@ For each cell of $R$, choose one of $|\Sigma|$ values to minimize the conditiona
 
 \follows $\O{n |\L| \cdot |\Sigma| \cdot |\L| T \cdot |\U|}$\pause, where $T$ is the runtime of computing conditional probabilities of bad-events given a partial resampling table.\pause\par
 Also need to generate $\U$, which can be done in $\poly{|\U|}$ time.
+\end{frame}
+
+\begin{frame}{Polynomial Bound of $\nicefrac{\epsw(\G_B)}{\epslaw(B)}$}
+$\mu^{(h)}(I) \geq w(\{G \mid \text{sink $I$, max. depth $h$}\})$ \follows $\mu(B) = w(\G_B)$.\pause\spadding
+
+We have,
+\begin{enumerate}
+    \item $\mu^{(h+1)}(I) = p(I) \sum_{J \in \text{Stab}(I)} \mu^{(h)}(J)$\pause
+    \item $\mu^{(h)}(I) \leq \prod_{B \in I} \mu^{(h)}(B)$ if $\mu(B) \defeq e p(B)$
+\end{enumerate}\pause
+
+\begin{align*}
+    \mu^{(h+1)}(B) &= p(B) \sum_{J \in \text{Stab}(B)} \mu^{(h)}(J) \\
+                   &\leq p(B) \sum_{J \subseteq \bar{\Gamma}(B)} \prod_{B' \in J} \mu^{(h)}(B') \\
+    \sum_{J \subseteq \bar{\Gamma}(B)} \prod_{B' \in J} e p(B') &\leq \sum_{J \subseteq \bar{\Gamma}(B)} (e \pmax)^{|J|} \leq \sum_{k=0}^d {d \choose k} (e \pmax)^k \\
+    &= (1 + e \pmax)^d \leq \exp(\underbrace{e \pmax d}_{\leq 1}) \leq e.
+\end{align*}
 \end{frame}
 
 \end{document}
